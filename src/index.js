@@ -1,4 +1,6 @@
-import * as math from './math'
-import * as string from './string'
+import _ from 'lodash'
 
-export default { math, string }
+export default {
+  msg: 'This is my first library!!',
+  res: _.join(['a', 'b', 'c', '1'], '-'),
+}

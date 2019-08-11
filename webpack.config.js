@@ -1,15 +1,25 @@
-
 const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   entry: './src/index.js',
-  mode: 'production',
+  mode: 'development',
+  devServer: {
+    port: 8090,
+  },
+  // externals: ['lodash'],
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'yyf-test-library.js',
-    // 让打包后的js文件支持 es6 module ,commonjs, amd 的引入方式
-    libraryTarget: 'umd',
-    // 支持用script标签的src方式引入, 并将yyfTestLibrary指向此库, 并增加到业务代码的环境变量中
     library: 'yyfTestLibrary',
+    globalObject: 'this',
+    libraryTarget: 'umd',
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+      filename: 'index.html',
+      // chunks: ['index'],
+    }),
+  ],
 }
