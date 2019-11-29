@@ -4,15 +4,27 @@ const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 
+//项目根目录
+var projectDir = path.join(__dirname, '..');
+
 module.exports = {
-  entry: path.resolve(__dirname, "../example/index.js"),
+  entry: path.resolve(__dirname, "../examples/main.js"),
   mode: "development",
   devServer: {
-    port: 8090
+    port: 8090,
+    ...require("../src/magic-area-plugin/server")
   },
   output: {
     path: path.resolve(__dirname, "../dist"),
-    filename: "yyf-library.js"
+    filename: "examples.js"
+  },
+  resolve: {
+    extensions: [".js", ".vue"],
+    alias: {
+      "@src": path.join(projectDir, "src"),
+      "@example": path.join(projectDir, "examples"),
+      vue$: "vue/dist/vue.esm.js"
+    }
   },
   module: {
     rules: [
@@ -36,10 +48,10 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./src/index.html",
+      template: path.resolve(__dirname, "../examples/index.html"),
       filename: "index.html"
     }),
     new VueLoaderPlugin(),
-    new CleanWebpackPlugin(),
+    new CleanWebpackPlugin()
   ]
 };

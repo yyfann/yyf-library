@@ -30,8 +30,23 @@ const routeDatas = [
 ]
 // devServer 的端口号
 const devServerPort = 8080
-
 magicAreaPluginClient(Vue, router, routeDatas, devServerPort);
+
+
+```
+
+#### 禧云数科项目 useage
+```javascript
+import menuDatas from "@src/config/menu.js";
+
+const routeDatas = menuDatas
+    .map(menuData => {
+    return menuData.sub;
+    })
+    .flat()
+    .filter(x => x);
+    
+magicAreaPluginClient(Vue, router, routeDatas);
 ```
 
 ### devServer端
@@ -57,4 +72,6 @@ module.exports = {
 
 1 面板的拖拽
 2 支持其他编辑器
+
+
 

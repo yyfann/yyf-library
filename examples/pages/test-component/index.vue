@@ -1,11 +1,17 @@
 <template>
   <div>
-    一个莫得感情的测试组件
+    样例:
+    <test-component></test-component>
   </div>
 </template>
 
 <script>
+import testComponent from '@src/test-component/index.vue'
+
 export default {
+  components: {
+    testComponent
+  },
   data() {
     return {
       

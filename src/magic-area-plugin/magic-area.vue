@@ -11,6 +11,7 @@
     />
     <div>当前匹配路由: {{ targetRoutePath }}</div>
     <button @click="goPage">路由跳转</button>
+    <div>当前匹配文件路径: {{ targetFilePath }}</div>
     <br />
     <button @click="goFile">进入vue文件</button>
     <div>ctrl + m 切换隐藏显示</div>
@@ -41,6 +42,7 @@ export default {
   data() {
     return {
       targetRouteTitle: "",
+      targetFilePath: '',
       show: true,
     };
   },
@@ -68,9 +70,11 @@ export default {
     goPage() {
       if (this.targetRoutePath === "没有匹配!") return;
       this.$router.push(this.targetRoutePath);
+      this.targetFilePath = _.last(this.$route.matched).components.default.__file;
+      
     },
     goFile() {
-      const filePath = _.last(this.$route.matched).components.default.__file;
+      const filePath = this.targetFilePath
 
       axios
         .get(`http://localhost:${this.devServerPort}/code`, {
