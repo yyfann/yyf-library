@@ -9,5 +9,5 @@ export default [
       title: "测试组件"
     },
     component: testComponent
-  }
+  },
 ];

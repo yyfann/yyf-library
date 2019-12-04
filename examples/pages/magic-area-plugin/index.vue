@@ -18,6 +18,8 @@ const routeDatas = routerRawDatas.map((routerRawData) => {
   }
 })
 
+console.log(routeDatas,'routeDatas')
+
 // devServer 的端口号
 const devServerPort = 8090
 
@@ -30,9 +32,13 @@ export default {
     }
   },
 
+  mounted() {
+    this.fn()
+  },
+
   methods: {
     fn() {
-      magicAreaPluginClient(Vue, router, routeDatas, devServerPort);
+      new magicAreaPluginClient(Vue, router, routeDatas, devServerPort);
     },
   },
 }

@@ -5,23 +5,26 @@ function install(Vue, router, routeDatas, devServerPort) {
   magicAreaEl.id = "magicAreaEl";
   document.body.appendChild(magicAreaEl);
 
-  new Vue({
-    el: "#magicAreaEl",
-    components: {
-      magicArea
-    },
-    data: {
-      routeDatas,
-      devServerPort
-    },
-    template: `
+  if(!this.constructor.instance) {
+    this.constructor.instance = new Vue({
+      el: "#magicAreaEl",
+      components: {
+        magicArea
+      },
+      data: {
+        routeDatas,
+        devServerPort
+      },
+      template: `
       <magic-area 
         :route-datas="routeDatas"
         :dev-server-port="devServerPort"
       />
     `,
-    router
-  });
+      router
+    });
+  }
 }
 
 export default install;
+
