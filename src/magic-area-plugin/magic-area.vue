@@ -4,35 +4,36 @@
     ref="magicArea"
     v-show="show"
   >
-    <input
-      placeholder="请输入侧边栏路由的title"
-      type="text"
-      v-model="targetRouteTitle"
-    />
-    <div class="matched-routes">
-      <div
-        :key="matchedRouteIndex"
-        @click="goPage(matchedRoute.index)"
-        class="matched-route"
-        v-for="(matchedRoute, matchedRouteIndex) in matchedRoutes"
-      >
-        <span v-html="matchedRoute.name"></span>
-        <span>:{{ matchedRoute.index }}</span>
+    <div class="content">
+      <input
+        placeholder="请输入侧边栏路由的title"
+        type="text"
+        v-model="targetRouteTitle"
+      />
+      <div class="matched-routes">
+        <div
+          :key="matchedRouteIndex"
+          @click="goPage(matchedRoute.index)"
+          class="matched-route"
+          v-for="(matchedRoute, matchedRouteIndex) in matchedRoutes"
+        >
+          <span v-html="matchedRoute.name"></span>
+          <span>:{{ matchedRoute.index }}</span>
+        </div>
       </div>
+      <button @click="goFile">进入当前vue文件</button>
     </div>
-    <!-- <div>当前匹配文件路径: {{ targetFilePath }}</div> -->
-    <button @click="goFile">进入当前vue文件</button>
-    <div>ctrl + m 切换隐藏显示</div>
     <div
-      class="drag"
-      ref="dragArea"
-    >可拖拽区域</div>
+      class="footer"
+      ref="footer"
+    >提示: ctrl + m 切换隐藏显示</div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import _ from "lodash";
+import { drag } from '@src/utils/drag'
 
 export default {
   components: {},
@@ -68,44 +69,12 @@ export default {
     };
   },
   mounted() {
-    // 注册拖拽事件
-    const { magicArea, dragArea } = this.$refs;
-    console.log(magicArea, "magicArea");
+    const { magicArea, footer } = this.$refs;
 
-    function yang(e) {
-      var a = e.offsetX;
-      var b = e.offsetY;
-      document.onmousemove = function(e) {
-        var x = e.clientX - a;
-        var y = e.clientY - b;
-        var h = document.documentElement.clientHeight;
-        var w = document.documentElement.clientWidth;
+    drag(magicArea, footer, {
+      savePosition: true,
+    })
 
-        var xmax = w - magicArea.offsetWidth;
-        var ymax = h - magicArea.offsetHeight;
-        //判断边界
-        if (x < 0) {
-          x = 0;
-        } else if (x > xmax) {
-          x = xmax;
-        }
-        if (y < 0) {
-          y = 0;
-        } else if (y > ymax) {
-          y = ymax;
-        }
-
-        magicArea.style.left = x + "px";
-        magicArea.style.top = y + "px";
-
-        return false;
-      };
-    }
-
-    dragArea.onmousedown = yang;
-    document.documentElement.onmouseup = function() {
-      document.onmousemove = null;
-    };
   },
   watch: {
     $route(val) {
@@ -183,13 +152,13 @@ export default {
 .magic-area {
   border: 1px solid #000;
   border-radius: 20px;
-  padding: 10px;
   top: 100px;
   left: 300px;
   position: fixed;
   background: #fff;
   z-index: 2000;
   box-shadow: 2px 2px 2px 2px #888888;
+  overflow: hidden;
 }
 
 .matched-routes {
@@ -204,8 +173,16 @@ export default {
   cursor: pointer;
 }
 
-.drag {
+.content {
+  padding: 10px;
+}
+
+
+.footer {
   background: darkorange;
   height: 50px;
+  cursor: move;
+  padding: 10px;
+  line-height: 50px;
 }
 </style>

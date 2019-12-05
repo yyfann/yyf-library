@@ -12,6 +12,8 @@ module.exports = {
   mode: "development",
   devServer: {
     port: 8090,
+    open: true,
+    hot: true,
     ...require("../src/magic-area-plugin/server")
   },
   output: {

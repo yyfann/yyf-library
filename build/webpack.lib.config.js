@@ -2,6 +2,8 @@ const path = require("path");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
+var projectDir = path.join(__dirname, '..');
+
 module.exports = {
   entry: path.resolve(__dirname, "../src/index.js"),
   mode: 'production',
@@ -20,6 +22,14 @@ module.exports = {
     library: "yyfLibrary",
     globalObject: "this",
     libraryTarget: "umd"
+  },
+  resolve: {
+    extensions: [".js", ".vue"],
+    alias: {
+      "@src": path.join(projectDir, "src"),
+      "@example": path.join(projectDir, "examples"),
+      vue$: "vue/dist/vue.esm.js"
+    }
   },
   module: {
     rules: [
