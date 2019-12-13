@@ -5,6 +5,7 @@
     v-show="show"
   >
     <div class="content">
+      <!-- 路由快捷导航 -->
       <input
         placeholder="请输入侧边栏路由的title"
         type="text"
@@ -21,7 +22,19 @@
           <span>:{{ matchedRoute.index }}</span>
         </div>
       </div>
+
+      <!-- 打开源码 -->
       <button @click="goFile">进入当前vue文件</button>
+
+      <!-- 账号存储区 -->
+      <div>
+        <span>用户</span>
+        <input type="text">
+      </div>
+      <div>
+        <span>密码</span>
+        <input type="text">
+      </div>
     </div>
     <div
       class="footer"
@@ -34,6 +47,7 @@
 import axios from "axios";
 import _ from "lodash";
 import { drag } from '@src/utils/drag'
+
 
 export default {
   components: {},
@@ -53,14 +67,21 @@ export default {
   data() {
     return {
       show: true,
-      // targetRouteTitle: "",
-      targetRouteTitle: "测试",
+      targetRouteTitle: "",
       targetFilePath: "",
-      // matchedRoutes: [],
-      matchedRoutes: this.routeDatas
+      matchedRoutes: [],
     };
   },
   created() {
+    // 读取localStorage中的显示情况
+    const show = JSON.parse(localStorage.getItem('yyf-library-magic-area-isShow'))
+    // 首次使用, 先设置成 null
+    if (show === null) {
+      this.show = true
+    } else {
+      this.show = show
+    }
+
     // 组合键切换显示
     document.onkeydown = e => {
       if (77 == e.keyCode && e.ctrlKey) {
@@ -120,6 +141,13 @@ export default {
           .sortBy(routeData => routeData.name.length)
           .value();
       }
+    },
+
+    show() {
+      localStorage.setItem(
+        'yyf-library-magic-area-isShow',
+        JSON.stringify(this.show)
+      )
     }
   },
 

@@ -1,5 +1,5 @@
 const config = {
-  before: function(app, server, compiler) {
+  before: function(app) {
     const child_process = require("child_process");
 
     app.get("/code", function(req, res) {
@@ -8,5 +8,7 @@ const config = {
     });
   }
 };
+
+
 
 module.exports = config

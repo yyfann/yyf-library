@@ -25,6 +25,5 @@ function install(Vue, router, routeDatas, devServerPort) {
     });
   }
 }
-
 export default install;
 
