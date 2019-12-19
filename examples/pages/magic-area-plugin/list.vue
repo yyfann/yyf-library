@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div @click="fn">list</div>
+    <div>lllll</div>
+    <!-- <div @click="fn">list</div> -->
   </div>
 </template>
 
@@ -12,9 +13,18 @@ export default {
     }
   },
 
+  mounted() {
+    // this.$el.addEventListener('click', (e) => {
+    //   if (e.ctrlKey) {
+    //     console.log(e,'e')
+    //     console.log(this.$options.__file, 'el click')
+    //   }
+    // })
+  },
+
   methods: {
     fn() {
-      console.log(this.$options,'this list')
+      console.log(this.__file,'this list')
     },
   },
 }

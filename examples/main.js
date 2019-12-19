@@ -13,6 +13,30 @@ Vue.config.productionTip = false;
 
 window.Vue = Vue;
 
+const plugin = {
+  install(Vue, options) {
+    Vue.mixin({
+      mounted() {
+        this.__injectedFn = (e) => {
+          e.stopPropagation()
+          if (e.ctrlKey) {
+            console.log(e,'e')
+            console.log(this.$options.__file, 'el click')
+          }
+        }
+        console.log('mounted')
+        this.$el.addEventListener('click', this.__injectedFn)
+      },
+
+      destroyed(){
+        this.$el.removeEventListener('click', this.__injectedFn)
+      }
+    });
+  }
+};
+Vue.use(plugin);
+
+
 new Vue({
   router,
   render: function(h) {

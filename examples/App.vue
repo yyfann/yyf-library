@@ -26,6 +26,10 @@ export default {
   created() {
     this.routes = this.$router.options.routes
   },
+
+  methods: {
+
+  },
 }
 </script>
 

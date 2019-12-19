@@ -30,7 +30,7 @@ import router from "../../router/router";
 import magicAreaPluginClient from "@src/magic-area-plugin/client.js";
 import routerRawDatas from "../../router/routes/main-routes";
 
-import list from './list'
+import list from "./list";
 
 // 路由映射配置
 const routeDatas = routerRawDatas.map(routerRawData => {
@@ -40,13 +40,12 @@ const routeDatas = routerRawDatas.map(routerRawData => {
   };
 });
 
-console.log(routeDatas, "routeDatas");
 
 // devServer 的端口号
 const devServerPort = 8090;
 
 export default {
-  components: {list},
+  components: { list },
   data() {
     return {
       input1: "",
@@ -63,7 +62,7 @@ export default {
       new magicAreaPluginClient(Vue, router, routeDatas, devServerPort, {
         loginBtnSelector: ".login-yyy",
         appendBtnSelector: ".append-btn",
-        appendBtnDelay: 3000,
+        appendBtnDelay: 3000
       });
     },
 
@@ -75,7 +74,7 @@ export default {
     login() {
       console.log("login");
       setTimeout(() => {
-        this.showAppendBtn = true
+        this.showAppendBtn = true;
       }, 1000);
     },
 
