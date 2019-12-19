@@ -1,24 +1,26 @@
 import magicArea from "./magic-area.vue";
 
-function install(Vue, router, routeDatas, devServerPort) {
+function install(Vue, router, routeDatas, devServerPort, moreConfigs = {}) {
   const magicAreaEl = document.createElement("div");
   magicAreaEl.id = "magicAreaEl";
   document.body.appendChild(magicAreaEl);
 
-  if(!this.constructor.instance) {
+  if (!this.constructor.instance) {
     this.constructor.instance = new Vue({
       el: "#magicAreaEl",
       components: {
         magicArea
       },
       data: {
-        routeDatas,
-        devServerPort
+        magicProps: {
+          routeDatas,
+          devServerPort,
+          ...moreConfigs,
+        }
       },
       template: `
       <magic-area 
-        :route-datas="routeDatas"
-        :dev-server-port="devServerPort"
+        v-bind="magicProps"
       />
     `,
       router
@@ -26,4 +28,3 @@ function install(Vue, router, routeDatas, devServerPort) {
   }
 }
 export default install;
-

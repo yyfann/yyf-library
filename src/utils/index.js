@@ -1,11 +1,6 @@
 const _ = require('lodash')
 
 
-function join(arr) {
-  return _.join(arr, '*')
-}
-
-
 // 替换多个连续空行成一个空行
 // tip: 
 //  CRLF 的换行模式 \r\n 表示一个换行
@@ -85,5 +80,4 @@ module.exports = {
   dropExtraLine,
   insertByPosition,
   duplicateHandle,
-  join,
 }

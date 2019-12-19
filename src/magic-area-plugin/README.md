@@ -58,6 +58,18 @@ module.exports = {
     // 增添这一行
     ...require("yyf-library/src/magic-area-plugin/server")
   },
+  module: {
+    rules: [
+      {
+        test: /\.vue$/,
+        loader: "vue-loader",
+        // 让组件都有一个相对路径
+        options: {
+          exposeFilename: true,
+        }
+      },
+    ]
+  }
 }
 ```
 

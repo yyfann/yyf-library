@@ -8,7 +8,9 @@
         :to="route.path"
       >{{ route.meta.title }}</router-link>
     </div>
-    <router-view></router-view>
+    <div class="content">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -23,7 +25,6 @@ export default {
 
   created() {
     this.routes = this.$router.options.routes
-    console.log(this.routes,'this.routes')
   },
 }
 </script>
@@ -35,6 +36,12 @@ export default {
 }
 .nav-option {
   margin: 10px;
+}
+
+.content {
+  margin-top: 10px;
+  border: 1px solid black;
+  padding: 10px;
 }
     
 </style>

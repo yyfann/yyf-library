@@ -10,3 +10,4 @@ export {
   testComponent,
   magicAreaPluginClient,
 };
+
