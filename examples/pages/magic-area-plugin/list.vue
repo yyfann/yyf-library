@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>lllll</div>
+    <div>列表组件</div>
     <!-- <div @click="fn">list</div> -->
   </div>
 </template>

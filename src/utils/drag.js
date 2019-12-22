@@ -13,7 +13,7 @@ function drag(box, dragArea, config={}) {
     const oldPosition = JSON.parse(localStorage.getItem(localStorageKey))
     Object.assign(box.style, oldPosition)
   }
-
+  
   dragArea.onmousedown = function(e) {
     var a = e.offsetX;
     var b = e.offsetY;

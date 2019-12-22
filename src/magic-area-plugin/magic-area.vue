@@ -1,81 +1,41 @@
-<template>
-  <div
-    class="magic-area"
-    ref="magicArea"
-    v-show="show"
-  >
-    <div class="content">
-      <!-- 路由快捷导航 -->
-      <div class="route-nav">
-        <input
-          placeholder="请输入侧边栏路由的title"
-          type="text"
-          v-model="targetRouteTitle"
-        />
-        <div class="matched-routes">
-          <div
-            :key="matchedRouteIndex"
-            @click="goPage(matchedRoute.index)"
-            class="matched-route"
-            v-for="(matchedRoute, matchedRouteIndex) in matchedRoutes"
-          >
-            <span v-html="matchedRoute.name"></span>
-            <span>:{{ matchedRoute.index }}</span>
-          </div>
-        </div>
-      </div>
+<template lang="pug">
+  .magic-area(ref='magicArea', v-show='show')
+    .content
+      //- 路由快捷导航
+      .route-nav
+        input(placeholder='请输入侧边栏路由的title', type='text', v-model='targetRouteTitle')
+        .matched-routes
+          .matched-route(:key='matchedRouteIndex', @click='goPage(matchedRoute.index)', v-for='(matchedRoute, matchedRouteIndex) in matchedRoutes')
+            span(v-html='matchedRoute.name')
+            span :{{ matchedRoute.index }}
 
-      <!-- 打开源码 -->
-      <div class="open-source-code">
-        <button @click="goFile">进入当前vue文件</button>
-      </div>
+      //- 打开源码
+      .open-source-code
+        button(@click='goFile') 进入当前vue文件
 
-      <!-- 账号存储区 -->
-      <div class="auto-login">
-        <button @click="addUserInfo">添加用户信息</button>
-        <div class="user-infos">
-          <div
-            :key="userInfo.id"
-            v-for="(userInfo, userInfoIndex) in userInfos"
-          >
-            <div>
-              <span>标题</span>
-              <input
-                type="text"
-                v-model="userInfo.title"
-              />
-            </div>
-            <div>
-              <span>用户</span>
-              <input
-                type="text"
-                v-model="userInfo.username"
-              />
-            </div>
-            <div>
-              <span>密码</span>
-              <input
-                type="text"
-                v-model="userInfo.password"
-              />
-            </div>
-            <button @click="deleteUserInfo(userInfo)">删除此信息</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="footer"
-      ref="footer"
-    >
-      <div>提示: ctrl + m 切换隐藏显示</div>
-      <div>提示: ctrl + l + 数字 自动登录</div>
-    </div>
-  </div>
+      //- 账号存储区
+      .auto-login
+        button(@click='addUserInfo') 添加用户信息
+        .user-infos
+          div(:key='userInfo.id', v-for='(userInfo, userInfoIndex) in userInfos')
+            div
+              span 标题
+              input(type='text', v-model='userInfo.title')
+            div
+              span 用户
+              input(type='text', v-model='userInfo.username')
+            div
+              span 密码
+              input(type='text', v-model='userInfo.password')
+            button(@click='deleteUserInfo(userInfo)') 删除此信息
+
+    .footer(ref='footer')
+      div 提示: ctrl + m 切换隐藏显示
+      div 提示: ctrl + 右键 点击元素进入组件源码
+      div 提示: ctrl + l + 数字 自动登录
 </template>
 
 <script>
-import axios from "axios";
 import _ from "lodash";
 import { drag } from "@src/utils/drag";
 
@@ -88,9 +48,9 @@ export default {
       default: () => []
     },
 
-    devServerPort: {
-      type: Number,
-      default: 0
+    launchEditor: {
+      type: Function,
+      default: null
     },
 
     loginBtnSelector: {
@@ -100,20 +60,19 @@ export default {
 
     appendBtnSelector: {
       type: String,
-      default: '',
+      default: ""
     },
 
     appendBtnDelay: {
       type: Number,
-      default: 0,
-    },
+      default: 0
+    }
   },
 
   data() {
     return {
       show: true,
       targetRouteTitle: "",
-      targetFilePath: "",
       matchedRoutes: [],
       userInfos: []
     };
@@ -129,7 +88,6 @@ export default {
     this.userInfos = userInfos || [];
 
     document.onkeydown = e => {
-      console.log(e.key, "e.key");
       // 组合键切换显示
       if ("m" === e.key && e.ctrlKey) {
         this.show = !this.show;
@@ -140,10 +98,10 @@ export default {
         // 填入用户名密码
         const inputs = document.querySelectorAll("input");
         inputs[0].value = this.userInfos[0].username;
-        inputs[0].dispatchEvent(new Event('input'))
+        inputs[0].dispatchEvent(new Event("input"));
 
         inputs[1].value = this.userInfos[0].password;
-        inputs[1].dispatchEvent(new Event('input'))
+        inputs[1].dispatchEvent(new Event("input"));
 
         // 点击登录按钮
         const loginBtn = document.querySelectorAll(this.loginBtnSelector);
@@ -152,7 +110,7 @@ export default {
         // 点击强行登录的确定, 有一定延迟
         setTimeout(() => {
           const appendBtn = document.querySelectorAll(this.appendBtnSelector);
-          appendBtn[0].click()
+          appendBtn[0].click();
         }, this.appendBtnDelay);
       }
     };
@@ -241,19 +199,11 @@ export default {
       if (!path) return;
       this.$router.push(path);
     },
-    goFile() {
-      this.targetFilePath = _.last(
-        this.$route.matched
-      ).components.default.__file;
-      const filePath = this.targetFilePath;
 
-      axios
-        .get(`http://localhost:${this.devServerPort}/code`, {
-          params: {
-            filePath: `-g ${filePath}`
-          }
-        })
-        .then(res => {});
+    goFile() {
+      const filePath = _.last(this.$route.matched).components.default.__file;
+
+      this.launchEditor(filePath);
     },
 
     addUserInfo() {
@@ -274,45 +224,37 @@ export default {
 };
 </script>
 
-<style scoped>
-.magic-area {
-  border: 1px solid #000;
-  border-radius: 20px;
-  top: 100px;
-  left: 300px;
-  position: fixed;
-  background: #fff;
-  z-index: 2000;
-  box-shadow: 2px 2px 2px 2px #888888;
-  overflow: hidden;
-}
 
-.matched-routes {
-  margin: 5px;
-  padding: 5px;
-}
-
-.matched-route {
-  border-bottom: 1px solid #000;
-  margin: 10px 0 10px 0;
-  background: wheat;
-  cursor: pointer;
-}
-
-.content {
-  padding: 10px;
-}
-
-.user-infos {
-  max-height: 150px;
-  overflow: auto;
-}
-
-.footer {
-  background: darkorange;
-  height: 50px;
-  cursor: move;
-  padding: 10px;
-  line-height: 50px;
-}
+<style lang="sass" scoped>
+.magic-area
+  border: 1px solid #000
+  border-radius: 20px
+  top: 100px
+  left: 300px
+  position: fixed
+  background: #fff
+  z-index: 2000
+  box-shadow: 2px 2px 2px 2px #888888
+  overflow: hidden
+  .content
+    padding: 10px
+    .route-nav
+      .matched-routes
+        margin: 5px
+        padding: 5px
+        .matched-route
+          border-bottom: 1px solid #000
+          margin: 10px 0 10px 0
+          background: wheat
+          cursor: pointer
+    .open-source-code
+    .auto-login
+      .user-infos
+        max-height: 150px
+        overflow: auto
+  .footer
+    background: darkorange
+    cursor: move
+    padding: 10px
+    line-height: 50px
 </style>

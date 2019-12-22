@@ -5,7 +5,6 @@ import Vue from "vue";
 
 import "./plugins/element-ui";
 import 'element-ui/lib/theme-chalk/index.css';
-
 import App from "./App.vue";
 import router from "./router/router";
 
@@ -13,28 +12,26 @@ Vue.config.productionTip = false;
 
 window.Vue = Vue;
 
-const plugin = {
-  install(Vue, options) {
-    Vue.mixin({
-      mounted() {
-        this.__injectedFn = (e) => {
-          e.stopPropagation()
-          if (e.ctrlKey) {
-            console.log(e,'e')
-            console.log(this.$options.__file, 'el click')
-          }
-        }
-        console.log('mounted')
-        this.$el.addEventListener('click', this.__injectedFn)
-      },
+import { magicAreaPluginClient } from "@src/index.js";
+import routerRawDatas from "./router/routes/main-routes";
 
-      destroyed(){
-        this.$el.removeEventListener('click', this.__injectedFn)
-      }
-    });
-  }
-};
-Vue.use(plugin);
+// 路由映射配置
+const routeDatas = routerRawDatas.map(routerRawData => {
+  return {
+    name: routerRawData.meta.title,
+    index: routerRawData.path
+  };
+});
+
+
+// devServer 的端口号
+const devServerPort = 8090;
+
+new magicAreaPluginClient(Vue, router, routeDatas, devServerPort, {
+  loginBtnSelector: ".login-yyy",
+  appendBtnSelector: ".append-btn",
+  appendBtnDelay: 3000
+});
 
 
 new Vue({

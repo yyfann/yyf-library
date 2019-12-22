@@ -1,66 +1,28 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const VueLoaderPlugin = require("vue-loader/lib/plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const webpackMerge = require('webpack-merge')
 
+const commonConfig = require('./webpack.common.config')
 
-//项目根目录
-var projectDir = path.join(__dirname, '..');
-
-module.exports = {
-  entry: path.resolve(__dirname, "../examples/main.js"),
+const devConfig = {
   mode: "development",
-  devServer: {
-    port: 8090,
-    open: true,
-    hot: true,
-    ...require("../src/magic-area-plugin/server")
-  },
+  entry: path.resolve(__dirname, "../examples/main.js"),
   output: {
     path: path.resolve(__dirname, "../dist"),
     filename: "examples.js"
   },
-  resolve: {
-    extensions: [".js", ".vue"],
-    alias: {
-      "@src": path.join(projectDir, "src"),
-      "@example": path.join(projectDir, "examples"),
-      vue$: "vue/dist/vue.esm.js"
-    }
-  },
-  module: {
-    rules: [
-      {
-        test: /\.vue$/,
-        loader: "vue-loader",
-        options: {
-          exposeFilename: true,
-        }
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: "babel-loader",
-        options: {
-          presets: [["@babel/preset-env"]]
-        }
-      },
-      {
-        test: /\.css$/,
-        use: ["vue-style-loader", "css-loader"]
-      },
-      {
-        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        loader: 'url-loader',
-      },
-    ]
+  devServer: {
+    port: 8090,
+    // open: true,
+    hot: true,
+    ...require("../src/magic-area-plugin/server")
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "../examples/index.html"),
       filename: "index.html"
     }),
-    new VueLoaderPlugin(),
-    new CleanWebpackPlugin()
   ]
 };
+
+module.exports = webpackMerge(commonConfig, devConfig)
