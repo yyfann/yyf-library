@@ -56,4 +56,4 @@ function drag(box, dragArea, config={}) {
 }
 
 
-module.exports = {drag}
+export {drag}

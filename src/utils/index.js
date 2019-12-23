@@ -76,7 +76,7 @@ function duplicateHandle(src) {
 
 
 
-module.exports = {
+export {
   dropExtraLine,
   insertByPosition,
   duplicateHandle,

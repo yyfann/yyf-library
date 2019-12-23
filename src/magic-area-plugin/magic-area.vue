@@ -17,7 +17,11 @@
       .auto-login
         button(@click='addUserInfo') 添加用户信息
         .user-infos
-          div(:key='userInfo.id', v-for='(userInfo, userInfoIndex) in userInfos')
+          .user-info(
+            :key='userInfo.id', 
+            v-for='(userInfo, userInfoIndex) in userInfos'
+            :class="{'user-info_active': userInfoIndex === currentUserInfoIndex}"
+          )
             div
               span 标题
               input(type='text', v-model='userInfo.title')
@@ -27,6 +31,9 @@
             div
               span 密码
               input(type='text', v-model='userInfo.password')
+            div
+              span 常用路由
+              input(type='text', v-model='userInfo.recentRoute')
             button(@click='deleteUserInfo(userInfo)') 删除此信息
 
     .footer(ref='footer')
@@ -71,36 +78,56 @@ export default {
 
   data() {
     return {
-      show: true,
       targetRouteTitle: "",
       matchedRoutes: [],
-      userInfos: []
+      show: true,
+      userInfos: [],
+      currentUserInfoIndex: 0
     };
   },
-  created() {
+
+  computed: {
+    currentUserInfo() {
+      return this.userInfos[this.currentUserInfoIndex] || {}
+    },
+
+    localData() {
+
+    }
+  },
+
+  async created() {
     // 读取localStorage中的显示情况
     const localData =
       JSON.parse(localStorage.getItem("yyf-library-magic-area-data")) || {};
 
     // 读取面板显示情况
-    const { show, userInfos } = localData;
+    const { show, userInfos, currentUserInfoIndex } = localData;
+    console.log(currentUserInfoIndex,'currentUserInfoIndex')
     this.show = show;
     this.userInfos = userInfos || [];
+    this.currentUserInfoIndex = currentUserInfoIndex || 0
 
-    document.onkeydown = e => {
-      // 组合键切换显示
+
+    document.onkeydown = async e => {
+      console.log(e.key,'e.key')
+      // 组合键切换显示面板
       if ("m" === e.key && e.ctrlKey) {
         this.show = !this.show;
+      }
+
+      if (/\d/.test(e.key) && e.altKey) {
+        this.currentUserInfoIndex = +e.key - 1
       }
 
       // 组合键自动登录
       if ("i" == e.key && e.ctrlKey) {
         // 填入用户名密码
         const inputs = document.querySelectorAll("input");
-        inputs[0].value = this.userInfos[0].username;
+        inputs[0].value = this.currentUserInfo.username;
         inputs[0].dispatchEvent(new Event("input"));
 
-        inputs[1].value = this.userInfos[0].password;
+        inputs[1].value = this.currentUserInfo.password;
         inputs[1].dispatchEvent(new Event("input"));
 
         // 点击登录按钮
@@ -108,10 +135,22 @@ export default {
         loginBtn[0].click();
 
         // 点击强行登录的确定, 有一定延迟
-        setTimeout(() => {
-          const appendBtn = document.querySelectorAll(this.appendBtnSelector);
-          appendBtn[0].click();
-        }, this.appendBtnDelay);
+        if (this.appendBtnSelector) {
+          await new Promise((resolve, reject) => {
+            setTimeout(() => {
+              const appendBtn = document.querySelectorAll(
+                this.appendBtnSelector
+              );
+              appendBtn[0].click();
+              resolve()
+            }, this.appendBtnDelay);
+          })
+        }
+
+        // 登录用户信息对应的常用路由
+        if (this.currentUserInfo.recentRoute) {
+          this.goPage(this.currentUserInfo.recentRoute)
+        }
       }
     };
   },
@@ -177,7 +216,12 @@ export default {
         this.updateLocal("userInfos", this.userInfos);
       },
       deep: true
-    }
+    },
+
+    currentUserInfoIndex(val) {
+      console.log(this.val,'this.val')
+      this.updateLocal("currentUserInfoIndex", this.currentUserInfoIndex);      
+    },
   },
 
   methods: {
@@ -187,12 +231,14 @@ export default {
 
       localData[key] = value;
 
+      console.log(localData,'localData')
+
       localStorage.setItem(
         "yyf-library-magic-area-data",
         JSON.stringify(localData)
       );
 
-      // console.log(localStorage.getItem("yyf-library-magic-area-data"),'local str')
+      console.log(localStorage.getItem("yyf-library-magic-area-data"),'local str')
     },
 
     goPage(path) {
@@ -211,6 +257,7 @@ export default {
         title: "",
         username: "",
         password: "",
+        recentRoute: "",
         id: new Date().getTime()
       });
     },
@@ -252,6 +299,12 @@ export default {
       .user-infos
         max-height: 150px
         overflow: auto
+        .user-info
+          border: 1px solid #000
+          margin-top: 10px
+        .user-info_active
+          border: 2px solid red
+
   .footer
     background: darkorange
     cursor: move
