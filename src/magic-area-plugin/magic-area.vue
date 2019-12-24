@@ -38,7 +38,7 @@
 
     .footer(ref='footer')
       div 提示: ctrl + m 切换隐藏显示
-      div 提示: ctrl + 右键 点击元素进入组件源码
+      div 提示: ctrl + 左键 点击元素进入组件源码
       div 提示: ctrl + l + 数字 自动登录
 </template>
 

@@ -7,10 +7,12 @@ import "./plugins/element-ui";
 import 'element-ui/lib/theme-chalk/index.css';
 import App from "./App.vue";
 import router from "./router/router";
+import _ from 'lodash'
 
 Vue.config.productionTip = false;
 
 window.Vue = Vue;
+window._ = _;
 
 import { magicAreaPluginClient } from "@src/index.js";
 import routerRawDatas from "./router/routes/main-routes";
