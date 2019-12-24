@@ -88,79 +88,19 @@ export default {
 
   computed: {
     currentUserInfo() {
-      return this.userInfos[this.currentUserInfoIndex] || {}
+      return this.userInfos[this.currentUserInfoIndex] || {};
     },
 
     localData() {
-
+      const attrsNeedLocal = ["show", "userInfos", "currentUserInfoIndex"];
+      const obj = attrsNeedLocal.reduce((next, attr) => {
+        next[attr] = this[attr];
+        return next
+      }, {});
+      return obj;
     }
   },
 
-  async created() {
-    // 读取localStorage中的显示情况
-    const localData =
-      JSON.parse(localStorage.getItem("yyf-library-magic-area-data")) || {};
-
-    // 读取面板显示情况
-    const { show, userInfos, currentUserInfoIndex } = localData;
-    console.log(currentUserInfoIndex,'currentUserInfoIndex')
-    this.show = show;
-    this.userInfos = userInfos || [];
-    this.currentUserInfoIndex = currentUserInfoIndex || 0
-
-
-    document.onkeydown = async e => {
-      console.log(e.key,'e.key')
-      // 组合键切换显示面板
-      if ("m" === e.key && e.ctrlKey) {
-        this.show = !this.show;
-      }
-
-      if (/\d/.test(e.key) && e.altKey) {
-        this.currentUserInfoIndex = +e.key - 1
-      }
-
-      // 组合键自动登录
-      if ("i" == e.key && e.ctrlKey) {
-        // 填入用户名密码
-        const inputs = document.querySelectorAll("input");
-        inputs[0].value = this.currentUserInfo.username;
-        inputs[0].dispatchEvent(new Event("input"));
-
-        inputs[1].value = this.currentUserInfo.password;
-        inputs[1].dispatchEvent(new Event("input"));
-
-        // 点击登录按钮
-        const loginBtn = document.querySelectorAll(this.loginBtnSelector);
-        loginBtn[0].click();
-
-        // 点击强行登录的确定, 有一定延迟
-        if (this.appendBtnSelector) {
-          await new Promise((resolve, reject) => {
-            setTimeout(() => {
-              const appendBtn = document.querySelectorAll(
-                this.appendBtnSelector
-              );
-              appendBtn[0].click();
-              resolve()
-            }, this.appendBtnDelay);
-          })
-        }
-
-        // 登录用户信息对应的常用路由
-        if (this.currentUserInfo.recentRoute) {
-          this.goPage(this.currentUserInfo.recentRoute)
-        }
-      }
-    };
-  },
-  mounted() {
-    const { magicArea, footer } = this.$refs;
-
-    drag(magicArea, footer, {
-      savePosition: true
-    });
-  },
   watch: {
     $route(val) {
       const routePath = val.fullPath;
@@ -207,38 +147,86 @@ export default {
       }
     },
 
-    show() {
-      this.updateLocal("show", this.show);
-    },
-
-    userInfos: {
+    localData: {
       handler() {
-        this.updateLocal("userInfos", this.userInfos);
+        this.updateLocalAll(this.localData);
       },
       deep: true
-    },
+    }
+  },
 
-    currentUserInfoIndex(val) {
-      console.log(this.val,'this.val')
-      this.updateLocal("currentUserInfoIndex", this.currentUserInfoIndex);      
-    },
+  async mounted() {
+    // 读取localStorage中的显示情况
+    const localData =
+      JSON.parse(localStorage.getItem("yyf-library-magic-area-data")) || {};
+    Object.assign(this, localData);
+
+    // 快捷键
+    document.onkeydown = async e => {
+      // console.log(e.key, "e.key");
+      // 切换面板的显示隐藏
+      if ("m" === e.key && e.ctrlKey) {
+        this.show = !this.show;
+      }
+
+      // 切换当前使用的用户信息
+      if (/\d/.test(e.key) && e.altKey) {
+        this.currentUserInfoIndex = +e.key - 1;
+      }
+
+      // 自动登录
+      if ("i" == e.key && e.ctrlKey) {
+        // 填入用户名密码
+        const inputs = document.querySelectorAll("input");
+        inputs[0].value = this.currentUserInfo.username;
+        inputs[0].dispatchEvent(new Event("input"));
+
+        inputs[1].value = this.currentUserInfo.password;
+        inputs[1].dispatchEvent(new Event("input"));
+
+        // 点击登录按钮
+        const loginBtn = document.querySelectorAll(this.loginBtnSelector);
+        loginBtn[0].click();
+
+        // 点击强行登录的确定, 有一定延迟
+        if (this.appendBtnSelector) {
+          await new Promise((resolve, reject) => {
+            setTimeout(() => {
+              const appendBtn = document.querySelectorAll(
+                this.appendBtnSelector
+              );
+              appendBtn[0].click();
+              resolve();
+            }, this.appendBtnDelay);
+          });
+        }
+
+        // 登录用户信息对应的常用路由
+        if (this.currentUserInfo.recentRoute) {
+          this.goPage(this.currentUserInfo.recentRoute);
+        }
+      }
+    };
+
+    // 拖拽
+    const { magicArea, footer } = this.$refs;
+
+    drag(magicArea, footer, {
+      savePosition: true
+    });
   },
 
   methods: {
-    updateLocal(key, value) {
-      const localData =
-        JSON.parse(localStorage.getItem("yyf-library-magic-area-data")) || {};
-
-      localData[key] = value;
-
-      console.log(localData,'localData')
-
+    updateLocalAll(localData) {
       localStorage.setItem(
         "yyf-library-magic-area-data",
         JSON.stringify(localData)
       );
 
-      console.log(localStorage.getItem("yyf-library-magic-area-data"),'local str')
+      // console.log(
+      //   localStorage.getItem("yyf-library-magic-area-data"),
+      //   "local str"
+      // );
     },
 
     goPage(path) {
