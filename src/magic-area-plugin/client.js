@@ -6,7 +6,6 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
 
   // -------------- 打开编辑器的函数 --------------
   function launchEditor(filePath) {
-    console.log(filePath, 'filePath')
     if (filePath) {
       axios
         .get(`http://localhost:${devServerPort}/code`, {
@@ -54,7 +53,6 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
           this.__injectedFn = (e) => {
             if (e.ctrlKey) {
               e.preventDefault()
-              console.log(this.$el, '$el')
               const filePath = this.$options.__file
               if (filePath) {
                 e.stopPropagation()

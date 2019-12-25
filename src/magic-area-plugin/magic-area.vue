@@ -1,9 +1,21 @@
 <template lang="pug">
   .magic-area(ref='magicArea', v-show='show')
     .content
-      //- 路由快捷导航
-      .route-nav
-        input(placeholder='请输入侧边栏路由的title', type='text', v-model='targetRouteTitle')
+      //- 当前用户常用路由导航
+      .recent-route-nav.route-nav
+        div 最近使用的路由
+        .matched-routes
+          .matched-route(
+            :key='currentUserRecentRouteIndex', 
+            @click='goPage(currentUserRecentRoute.index)', 
+            v-for='(currentUserRecentRoute, currentUserRecentRouteIndex) in currentUserRecentRoutes'
+          )
+            span {{ currentUserRecentRoute.name }}
+            span :{{ currentUserRecentRoute.index }}
+
+      //- 搜索路由导航
+      .search-route-nav.route-nav
+        input(placeholder='搜索: 请输入侧边栏路由的title', type='text', v-model='targetRouteTitle')
         .matched-routes
           .matched-route(:key='matchedRouteIndex', @click='goPage(matchedRoute.index)', v-for='(matchedRoute, matchedRouteIndex) in matchedRoutes')
             span(v-html='matchedRoute.name')
@@ -33,7 +45,7 @@
               input(type='text', v-model='userInfo.password')
             div
               span 常用路由
-              input(type='text', v-model='userInfo.recentRoute')
+              input(type='text', v-model='userInfo.recentRoutes')
             button(@click='deleteUserInfo(userInfo)') 删除此信息
 
     .footer(ref='footer')
@@ -89,6 +101,17 @@ export default {
   computed: {
     currentUserInfo() {
       return this.userInfos[this.currentUserInfoIndex] || {};
+    },
+
+    currentUserRecentRoutes() {
+      if (this.currentUserInfo.recentRoutes) {
+        const titles = this.currentUserInfo.recentRoutes.split(',')
+        const routes = this.routeDatas.filter((routeData) => {
+          return titles.includes(routeData.name)
+        })
+        return routes
+      }
+      return []
     },
 
     localData() {
@@ -202,9 +225,9 @@ export default {
         }
 
         // 登录用户信息对应的常用路由
-        if (this.currentUserInfo.recentRoute) {
-          this.goPage(this.currentUserInfo.recentRoute);
-        }
+        // if (this.currentUserInfo.recentRoutes) {
+        //   this.goPage(this.currentUserInfo.recentRoutes);
+        // }
       }
     };
 
@@ -245,7 +268,7 @@ export default {
         title: "",
         username: "",
         password: "",
-        recentRoute: "",
+        recentRoutes: "",
         id: new Date().getTime()
       });
     },
