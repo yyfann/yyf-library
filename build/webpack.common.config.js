@@ -17,13 +17,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.vue$/,
-        loader: "vue-loader",
-        options: {
-          exposeFilename: true,
-        }
-      },
-      {
         test: /\.pug$/,
         loader: "pug-html-loader"
       },

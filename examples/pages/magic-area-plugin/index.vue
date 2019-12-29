@@ -2,6 +2,39 @@
   <div>
     <list></list>
 
+    <!-- 测试打开html源码 -->
+    <el-table
+      :data="tableData"
+      data-source="line:2"
+      style="width: 100%"
+    >
+      <el-table-column
+        label="日期"
+        prop="date"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        label="姓名"
+        prop="name"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        label="地址"
+        prop="address"
+      ></el-table-column>
+    </el-table>
+
+    <el-form label-width="80px">
+      <el-form-item label="活动名称">
+        <el-input data-source="file:2" v-model="form.name"></el-input>
+      </el-form-item>
+    </el-form>
+
+    <div>
+      
+    </div>
+
+    <!-- 测试登录 -->
     <input
       @change="change"
       type="text"
@@ -30,7 +63,18 @@ export default {
   data() {
     return {
       input1: "",
-      showAppendBtn: false
+      showAppendBtn: false,
+      tableData: [
+        {
+          date: "2016-05-02",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄"
+        }
+      ],
+
+      form: {
+        name: '写loader的活动'
+      }
     };
   },
 

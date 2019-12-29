@@ -1,9 +1,7 @@
 import Vue from "vue";
 
-// import "./plugins/ant-design-vue";
-// import "ant-design-vue/dist/antd.css";
-
-import "./plugins/element-ui";
+import ElementUI from 'element-ui';
+Vue.use(ElementUI);
 import 'element-ui/lib/theme-chalk/index.css';
 import App from "./App.vue";
 import router from "./router/router";
@@ -32,7 +30,8 @@ const devServerPort = 8090;
 new magicAreaPluginClient(Vue, router, routeDatas, devServerPort, {
   loginBtnSelector: ".login-yyy",
   appendBtnSelector: ".append-btn",
-  appendBtnDelay: 3000
+  appendBtnDelay: 3000,
+  inspectUiLibrary: 'element-ui'
 });
 
 

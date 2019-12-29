@@ -17,6 +17,24 @@ const devConfig = {
     hot: true,
     ...require("../src/magic-area-plugin/server")
   },
+  module: {
+    rules: [
+      {
+        test: /\.vue$/,
+        use: [
+          {
+            loader: "vue-loader",
+            options: {
+              exposeFilename: true,
+            }
+          },
+          {
+            loader: path.resolve(__dirname, '../examples/pages/magic-area-plugin/loader-dev.js'),
+          }
+        ]
+      },
+    ]
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "../examples/index.html"),

@@ -218,16 +218,18 @@ export default {
               const appendBtn = document.querySelectorAll(
                 this.appendBtnSelector
               );
-              appendBtn[0].click();
+              if (appendBtn[0]) {
+                appendBtn[0].click();
+              }
               resolve();
             }, this.appendBtnDelay);
           });
         }
 
         // 登录用户信息对应的常用路由
-        // if (this.currentUserInfo.recentRoutes) {
-        //   this.goPage(this.currentUserInfo.recentRoutes);
-        // }
+        if (this.currentUserRecentRoutes.length) {
+          this.goPage(this.currentUserRecentRoutes[0].index);
+        }
       }
     };
 
@@ -319,6 +321,6 @@ export default {
   .footer
     background: darkorange
     cursor: move
+    height: 100px
     padding: 10px
-    line-height: 50px
 </style>

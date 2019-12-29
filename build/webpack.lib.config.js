@@ -14,6 +14,14 @@ const libConfig = {
     globalObject: "this",
     libraryTarget: "umd"
   },
+  module: {
+    rules: [
+      {
+        test: /\.vue$/,
+        loader: "vue-loader",
+      },
+    ]
+  },
 };
 
 module.exports = webpackMerge(commonConfig, libConfig)

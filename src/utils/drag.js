@@ -15,8 +15,9 @@ function drag(box, dragArea, config={}) {
   }
   
   dragArea.onmousedown = function(e) {
-    var a = e.offsetX;
-    var b = e.offsetY;
+    var a = e.clientX - dragArea.getBoundingClientRect().left
+    var b = e.clientY - dragArea.getBoundingClientRect().top
+    
     document.onmousemove = function(e) {
       var x = e.clientX - a - dragArea.offsetLeft;
       var y = e.clientY - b - dragArea.offsetTop;
