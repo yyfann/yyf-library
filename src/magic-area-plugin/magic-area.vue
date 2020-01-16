@@ -2,7 +2,9 @@
   .magic-area(ref='magicArea', v-show='show')
     .content
       //- 当前用户常用路由导航
-      .recent-route-nav.route-nav
+      .recent-route-nav.route-nav(
+        v-show="showAreas.includes('recent-route-nav')"
+      )
         div 最近使用的路由
         .matched-routes
           .matched-route(
@@ -14,7 +16,9 @@
             span :{{ currentUserRecentRoute.index }}
 
       //- 搜索路由导航
-      .search-route-nav.route-nav
+      .search-route-nav.route-nav(
+        v-show="showAreas.includes('search-route-nav')"
+      )
         input(placeholder='搜索: 请输入侧边栏路由的title', type='text', v-model='targetRouteTitle')
         .matched-routes
           .matched-route(:key='matchedRouteIndex', @click='goPage(matchedRoute.index)', v-for='(matchedRoute, matchedRouteIndex) in matchedRoutes')
@@ -22,18 +26,26 @@
             span :{{ matchedRoute.index }}
 
       //- 打开源码
-      .open-source-code
-        button(@click='goFile') 进入当前vue文件
+      //- .open-route-source-code(
+      //-   v-show="showAreas.includes('open-route-source-code')"
+      //- )
+      //-   button(@click='goFile') 进入当前路由的vue文件
 
       //- 账号存储区
-      .auto-login
+      .auto-login(
+        v-show="showAreas.includes('auto-login')"
+      )
         button(@click='addUserInfo') 添加用户信息
-        .user-infos
+        .user-infos(
+          ref="userInfos"
+        )
           .user-info(
             :key='userInfo.id', 
             v-for='(userInfo, userInfoIndex) in userInfos'
-            :class="{'user-info_active': userInfoIndex === currentUserInfoIndex}"
           )
+            div
+              .order 序号: {{ userInfoIndex + 1 }}
+              button(@click='deleteUserInfo(userInfo)') 删除此信息
             div
               span 标题
               input(type='text', v-model='userInfo.title')
@@ -45,10 +57,13 @@
               input(type='text', v-model='userInfo.password')
             div
               span 常用路由
-              input(type='text', v-model='userInfo.recentRoutes')
-            button(@click='deleteUserInfo(userInfo)') 删除此信息
+              textarea.recent-routes-textarea(
+                type='text', v-model='userInfo.recentRoutes'
+              )
+
 
     .footer(ref='footer')
+      button(@click="fix") 清除无效userInfo
       div 提示: ctrl + m 切换隐藏显示
       div 提示: ctrl + 左键 点击元素进入组件源码
       div 提示: ctrl + l + 数字 自动登录
@@ -94,31 +109,62 @@ export default {
       matchedRoutes: [],
       show: true,
       userInfos: [],
-      currentUserInfoIndex: 0
+      showAreas: [
+        "recent-route-nav",
+        "search-route-nav",
+        "open-route-source-code",
+        "auto-login"
+      ]
     };
   },
 
   computed: {
     currentUserInfo() {
-      return this.userInfos[this.currentUserInfoIndex] || {};
+      return this.userInfos[0] || {};
     },
 
     currentUserRecentRoutes() {
       if (this.currentUserInfo.recentRoutes) {
-        const titles = this.currentUserInfo.recentRoutes.split(',')
-        const routes = this.routeDatas.filter((routeData) => {
-          return titles.includes(routeData.name)
-        })
-        return routes
+        const routeFields = this.currentUserInfo.recentRoutes
+          .split(/,\n*/)
+          .filter(x => x);
+
+        // 系统内置路由(通过文字提取)
+        const optionsRoutes = _.chain(routeFields)
+          .filter(routeField => {
+            return routeField.indexOf(":") === -1;
+          })
+          .map(routeField => {
+            const target = this.routeDatas.find(routeData => {
+              return routeData.name === routeField;
+            });
+            return target || {};
+          })
+          .value();
+
+        // 自定义路由
+        const customRoutes = routeFields
+          .filter(routeField => {
+            return routeField.indexOf(":") > -1;
+          })
+          .map(routeField => {
+            const [name, index] = routeField.split(":");
+            return {
+              name,
+              index
+            };
+          });
+
+        return [...optionsRoutes, ...customRoutes];
       }
-      return []
+      return [];
     },
 
     localData() {
-      const attrsNeedLocal = ["show", "userInfos", "currentUserInfoIndex"];
+      const attrsNeedLocal = ["show", "userInfos"];
       const obj = attrsNeedLocal.reduce((next, attr) => {
         next[attr] = this[attr];
-        return next
+        return next;
       }, {});
       return obj;
     }
@@ -186,7 +232,6 @@ export default {
 
     // 快捷键
     document.onkeydown = async e => {
-      // console.log(e.key, "e.key");
       // 切换面板的显示隐藏
       if ("m" === e.key && e.ctrlKey) {
         this.show = !this.show;
@@ -194,7 +239,13 @@ export default {
 
       // 切换当前使用的用户信息
       if (/\d/.test(e.key) && e.altKey) {
-        this.currentUserInfoIndex = +e.key - 1;
+        // 将当前使用的用户提到最前面
+        const user = this.userInfos.splice(+e.key - 1, 1)[0];
+        if (user) {
+          this.userInfos.unshift(user);
+          // 重置滚动条
+          this.$refs.userInfos.scrollTop = 0;
+        }
       }
 
       // 自动登录
@@ -235,23 +286,26 @@ export default {
 
     // 拖拽
     const { magicArea, footer } = this.$refs;
-
     drag(magicArea, footer, {
       savePosition: true
     });
   },
 
   methods: {
+    // 应急之用, 处理循环时id找不到的bug
+    fix() {
+      var ls = JSON.parse(localStorage.getItem("yyf-library-magic-area-data"));
+      console.log(ls, "ls");
+      ls.userInfos = ls.userInfos.filter(x => x);
+      console.log(ls, "ls");
+      localStorage.setItem("yyf-library-magic-area-data", JSON.stringify(ls));
+    },
+
     updateLocalAll(localData) {
       localStorage.setItem(
         "yyf-library-magic-area-data",
         JSON.stringify(localData)
       );
-
-      // console.log(
-      //   localStorage.getItem("yyf-library-magic-area-data"),
-      //   "local str"
-      // );
     },
 
     goPage(path) {
@@ -307,7 +361,7 @@ export default {
           margin: 10px 0 10px 0
           background: wheat
           cursor: pointer
-    .open-source-code
+    .open-route-source-code
     .auto-login
       .user-infos
         max-height: 150px
@@ -315,7 +369,13 @@ export default {
         .user-info
           border: 1px solid #000
           margin-top: 10px
-        .user-info_active
+          .order
+            display: inline
+            margin-right: 20px
+          .recent-routes-textarea
+            width: 200px
+            height: 50px
+        .user-info:first-child
           border: 2px solid red
 
   .footer

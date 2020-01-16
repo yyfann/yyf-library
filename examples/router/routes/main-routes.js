@@ -1,5 +1,6 @@
 import testComponent from "../../pages/test-component/index.vue";
 import autoClick from "../../pages/auto-click/index.vue";
+import xyList from "../../pages/xy-list/index.vue";
 
 
 export default [
@@ -18,5 +19,13 @@ export default [
       title: "自动页面交互"
     },
     component: autoClick
+  },
+  {
+    path: "/xy-list",
+    name: "xyList",
+    meta: {
+      title: "xy列表"
+    },
+    component: xyList
   },
 ];

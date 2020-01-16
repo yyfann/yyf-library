@@ -29,7 +29,7 @@ const devConfig = {
             }
           },
           {
-            loader: path.resolve(__dirname, '../examples/pages/magic-area-plugin/loader-dev.js'),
+            loader: path.resolve(__dirname, '../src/magic-area-plugin/add-element-location-loader.js'),
           }
         ]
       },

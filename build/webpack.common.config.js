@@ -60,6 +60,6 @@ module.exports = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
   ]
 };

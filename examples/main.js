@@ -6,11 +6,14 @@ import 'element-ui/lib/theme-chalk/index.css';
 import App from "./App.vue";
 import router from "./router/router";
 import _ from 'lodash'
+import axios from 'axios'
 
 Vue.config.productionTip = false;
 
 window.Vue = Vue;
 window._ = _;
+window.axios = axios;
+
 
 import { magicAreaPluginClient } from "@src/index.js";
 import routerRawDatas from "./router/routes/main-routes";
