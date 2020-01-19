@@ -63,7 +63,6 @@
 
 
     .footer(ref='footer')
-      button(@click="fix") 清除无效userInfo
       div 提示: ctrl + m 切换隐藏显示
       div 提示: ctrl + 左键 点击元素进入组件源码
       div 提示: ctrl + l + 数字 自动登录
@@ -292,15 +291,6 @@ export default {
   },
 
   methods: {
-    // 应急之用, 处理循环时id找不到的bug
-    fix() {
-      var ls = JSON.parse(localStorage.getItem("yyf-library-magic-area-data"));
-      console.log(ls, "ls");
-      ls.userInfos = ls.userInfos.filter(x => x);
-      console.log(ls, "ls");
-      localStorage.setItem("yyf-library-magic-area-data", JSON.stringify(ls));
-    },
-
     updateLocalAll(localData) {
       localStorage.setItem(
         "yyf-library-magic-area-data",

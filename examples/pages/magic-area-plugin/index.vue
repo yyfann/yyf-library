@@ -1,11 +1,10 @@
 <template>
   <div>
+    <!-- 测试打开html源码 -->
     <list></list>
 
-    <!-- 测试打开html源码 -->
     <el-table
       :data="tableData"
-      data-source="line:2"
       style="width: 100%"
     >
       <el-table-column
@@ -15,9 +14,12 @@
       ></el-table-column>
       <el-table-column
         label="姓名"
-        prop="name"
         width="180"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          {{ '就是: ' + scope.row.name }}
+        </template>
+      </el-table-column>
       <el-table-column
         label="地址"
         prop="address"
@@ -25,14 +27,15 @@
     </el-table>
 
     <el-form label-width="80px">
-      <el-form-item label="活动名称">
-        <el-input data-source="file:2" v-model="form.name"></el-input>
+      <el-form-item label="活动名称1">
+        <el-input v-model="form.name"></el-input>
+      </el-form-item>
+      <el-form-item label="活动名称2">{{ form.name }}</el-form-item>
+      <el-form-item label="活动名称3">
+        <div>{{ form.name }}</div>
       </el-form-item>
     </el-form>
 
-    <div>
-      
-    </div>
 
     <!-- 测试登录 -->
     <input
