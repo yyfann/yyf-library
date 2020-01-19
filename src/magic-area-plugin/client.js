@@ -8,7 +8,7 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
   function launchEditor(filePath) {
     if (!filePath) return
 
-    console.log(filePath,'filePath')
+    console.log(filePath, 'filePath')
 
     axios
       .get(`http://localhost:${devServerPort}/code`, {
@@ -19,9 +19,11 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
   }
 
   // 点击元素打开源码 (定位到行列)
-  document.onclick = function (e) {
-
+  function openSourceCode(e) {
     if (e.ctrlKey) {
+      console.log(e.target,'e.target')
+
+      e.preventDefault()
       // 判断点击元素的类别, 来找不同的标签(含有源码地址的)
       const options = [
         // 标签直接有源码地址
@@ -33,7 +35,19 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
             return e.target
           }
         },
-        // 1 el-table 的表头
+        // 2 el-form-item, el-button或任何父级有源码地址的标签
+        {
+          test(e) {
+            // return [
+            //   'el-form-item__content', 'el-form-item__label'
+            // ].includes(e.target.className)
+            return !!e.target.parentNode.getAttribute('source-code-location')
+          },
+          getTargetTag(e) {
+            return e.target.parentNode
+          }
+        },
+        // 1 el-table 的表头, 单元格
         {
           test(e) {
             return _.get(e.target, 'parentNode.className', '').indexOf('el-table') > -1
@@ -43,6 +57,7 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
              * el-table,el-table-column 处理
              * 1 el-column 标签会渲染在 .hidden-columns中, 无法直接点击到
              * 2 解决: 点击表头元素根据th的下标在 .hidden-columns中找 实际的el-column元素
+             * 3 这个逻辑是为了点击表头准备的, 单元格可以用因为恰好逻辑都能对上
              */
             // 找到th的位置下标
             const th = e.target.parentNode
@@ -56,17 +71,7 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
             return elColumn
           }
         },
-        // 2 el-form-item 的label, 或内容
-        {
-          test(e) {
-            return [
-              'el-form-item__content', 'el-form-item__label'
-            ].includes(e.target.className)
-          },
-          getTargetTag(e) {
-            return e.target.parentNode
-          }
-        }
+
       ]
 
       // 找到标签
@@ -82,7 +87,11 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
       const filePath = targetTag.getAttribute('source-code-location')
       launchEditor(filePath)
     }
+
   }
+
+  document.addEventListener('click', openSourceCode)
+  document.addEventListener('contextmenu', openSourceCode)
 
 
   // -------------- 操作面板实例 --------------
@@ -114,13 +123,13 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
   }
 
 
-  // 点击打开组件的源码 (包括node_modules里面的)
+  // 点击打开组件级别的源码 (包括node_modules里面的)
   const openComponentPlugin = {
     install(Vue, options) {
       Vue.mixin({
         mounted() {
           this.__injectedFn = (e) => {
-            if (e.ctrlKey) {
+            if (e.altKey) {
               e.preventDefault()
               let filePath = this.$options.__file
 
@@ -140,18 +149,18 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
               }
             }
           }
-          this.$el.addEventListener('contextmenu', this.__injectedFn)
+          this.$el.addEventListener('click', this.__injectedFn)
         },
 
 
         destroyed() {
-          this.$el.removeEventListener('contextmenu', this.__injectedFn)
+          this.$el.removeEventListener('click', this.__injectedFn)
         }
       });
     }
   };
 
-  Vue.use(openComponentPlugin);
+  // Vue.use(openComponentPlugin);
 }
 
 
