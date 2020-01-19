@@ -3,7 +3,7 @@
     :api="api"
     :search-query="searchForm"
     ref="xyList"
-    list-path="resultObject.pageData"
+    list-path="data.resultObject.pageData"
   >
     <el-table-column
       label="数据id"
@@ -36,6 +36,9 @@ export default {
       api: "/mock/list-data",
       searchForm: {}
     };
+  },
+
+  created() {
   },
 
   methods: {

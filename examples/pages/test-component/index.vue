@@ -1,7 +1,7 @@
 <template>
   <div>
     <test-component></test-component>
-    <div>随便写的东西</div>
+    <div>收起展开</div>
     <div class="container">
       <div class="inner" ref="inner">
         <div

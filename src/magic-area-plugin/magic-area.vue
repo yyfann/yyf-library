@@ -60,7 +60,12 @@
               textarea.recent-routes-textarea(
                 type='text', v-model='userInfo.recentRoutes'
               )
-
+      
+      //- 展示请求
+      json-viewer(
+        :value="responsesJson"
+        :expand-depth="6"
+      )
 
     .footer(ref='footer')
       div 提示: ctrl + m 切换隐藏显示
@@ -99,7 +104,13 @@ export default {
     appendBtnDelay: {
       type: Number,
       default: 0
-    }
+    },
+
+    responses: {
+      type: Array,
+      default: () => ([]),
+    },
+    
   },
 
   data() {
@@ -113,6 +124,9 @@ export default {
         "search-route-nav",
         "open-route-source-code",
         "auto-login"
+      ],
+      jsonData: [
+        {"name": "yyf"}
       ]
     };
   },
@@ -166,7 +180,16 @@ export default {
         return next;
       }, {});
       return obj;
-    }
+    },
+
+    responsesJson() {
+      return this.responses.map(({data, config}) => {
+        return {
+          url: config.url,
+          pageData: data.resultObject.pageData
+        }
+      })
+    },
   },
 
   watch: {
