@@ -52,6 +52,8 @@
     "element-ui": "^2.13.0",
     "jquery": "^3.4.1",
     "lodash": "^4.17.11",
-    "vue-json-viewer": "^2.2.8"
+    "vue-json-tree-view": "^2.1.4",
+    "vue-json-viewer": "^2.2.8",
+    "vue-json-views": "^1.1.0"
   }
 }

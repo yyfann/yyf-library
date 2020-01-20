@@ -18,16 +18,13 @@ window.axios = axios;
 import { magicAreaPluginClient } from "@src/index.js";
 import routerRawDatas from "./router/routes/main-routes";
 
-// axios请求列表
+// axios请求, 响应列表
 const responses = []
 axios.interceptors.response.use(function (response) {
-  // 对响应数据做点什么
   console.log(response,'response')
+  // 只将获取数据的请求保存
   responses.push(response)
   return response;
-}, function (error) {
-  // 对响应错误做点什么
-  return Promise.reject(error);
 });
 
 // 路由映射配置

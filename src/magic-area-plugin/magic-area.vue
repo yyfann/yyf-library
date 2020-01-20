@@ -25,12 +25,6 @@
             span(v-html='matchedRoute.name')
             span :{{ matchedRoute.index }}
 
-      //- 打开源码
-      //- .open-route-source-code(
-      //-   v-show="showAreas.includes('open-route-source-code')"
-      //- )
-      //-   button(@click='goFile') 进入当前路由的vue文件
-
       //- 账号存储区
       .auto-login(
         v-show="showAreas.includes('auto-login')"
@@ -62,23 +56,50 @@
               )
       
       //- 展示请求
-      json-viewer(
-        :value="responsesJson"
-        :expand-depth="6"
+      .responses-area(
+        v-show="showAreas.includes('quick-network')"
+        style="background: #292c33"
       )
+        //- json-viewer(
+        //-   :value="responsesJson"
+        //-   :expand-depth="6"
+        //-   style="background: wheat"
+        //- )
+        //- tree-view(
+        //-   :data='responsesJson' :options='{maxDepth: 3}'
+        //-   style="background: wheat"
+        //- )
+        json-view(
+          :data='responsesJson', 
+          theme="one-dark",
+          :deep="5"
+          style="background: #292c33"
+        )
 
-    .footer(ref='footer')
-      div 提示: ctrl + m 切换隐藏显示
-      div 提示: ctrl + 左键 点击元素进入组件源码
-      div 提示: ctrl + l + 数字 自动登录
+    .footer
+      .toggle-panel
+        multi-select(
+          mode="multi"
+          :options="allAreas"
+          :values.sync="showAreas"
+        )
+      .tips(ref='footer')
+        div ctrl + m 切换隐藏显示
+        div ctrl + 左键 点击元素进入组件源码
+        div ctrl + l + 数字 自动登录
 </template>
 
 <script>
 import _ from "lodash";
 import { drag } from "@src/utils/drag";
+import jsonView from 'vue-json-views'
+import multiSelect from '@src/multi-select/multi-select.vue'
 
 export default {
-  components: {},
+  components: {
+    multiSelect,
+    jsonView,
+  },
 
   props: {
     routeDatas: {
@@ -119,15 +140,25 @@ export default {
       matchedRoutes: [],
       show: true,
       userInfos: [],
-      showAreas: [
-        "recent-route-nav",
-        "search-route-nav",
-        "open-route-source-code",
-        "auto-login"
+      allAreas: [
+        {
+          label: '用户常用路由',
+          value: "recent-route-nav",
+        },
+        {
+          label: '路由搜索',
+          value: "search-route-nav",
+        },
+        {
+          label: '用户信息',
+          value: "auto-login",
+        },
+        {
+          label: '网络请求',
+          value: "quick-network",
+        },
       ],
-      jsonData: [
-        {"name": "yyf"}
-      ]
+      showAreas: []
     };
   },
 
@@ -174,7 +205,7 @@ export default {
     },
 
     localData() {
-      const attrsNeedLocal = ["show", "userInfos"];
+      const attrsNeedLocal = ["show", "userInfos", 'showAreas'];
       const obj = attrsNeedLocal.reduce((next, attr) => {
         next[attr] = this[attr];
         return next;
@@ -183,12 +214,20 @@ export default {
     },
 
     responsesJson() {
-      return this.responses.map(({data, config}) => {
-        return {
-          url: config.url,
-          pageData: data.resultObject.pageData
-        }
-      })
+      // 数组的形式
+      // return this.responses.map(({data, config}) => {
+      //   return {
+      //     url: config.url,
+      //     pageData: data.resultObject.pageData
+      //   }
+      // })
+
+      // 对象的形式
+      const obj = this.responses.reduce((obj, item) => {
+        obj[item.config.url] = item.data.resultObject.pageData
+        return obj
+      }, {});
+      return obj;
     },
   },
 
@@ -326,12 +365,6 @@ export default {
       this.$router.push(path);
     },
 
-    goFile() {
-      const filePath = _.last(this.$route.matched).components.default.__file;
-
-      this.launchEditor(filePath);
-    },
-
     addUserInfo() {
       this.userInfos.push({
         title: "",
@@ -346,7 +379,7 @@ export default {
       this.userInfos = this.userInfos.filter(_userInfo => {
         return userInfo.id !== _userInfo.id;
       });
-    }
+    },
   }
 };
 </script>
@@ -355,16 +388,17 @@ export default {
 <style lang="sass" scoped>
 .magic-area
   border: 1px solid #000
-  border-radius: 20px
   top: 100px
   left: 300px
+  border-radius: 20px
   position: fixed
   background: #fff
   z-index: 2000
   box-shadow: 2px 2px 2px 2px #888888
-  overflow: hidden
   .content
     padding: 10px
+    position: relative
+    border-radius: 20px 20px 0 0
     .route-nav
       .matched-routes
         margin: 5px
@@ -390,10 +424,22 @@ export default {
             height: 50px
         .user-info:first-child
           border: 2px solid red
-
+    .responses-area
+      // width: 200px
+      height: 400px
+      position: absolute
+      top: 0
+      right: 450px
+      overflow: auto
   .footer
-    background: darkorange
-    cursor: move
-    height: 100px
-    padding: 10px
+    height: 120px
+    border-radius: 0 0 20px 20px
+    display: flex
+    overflow: hidden
+    .toggle-panel
+      width: 200px
+      .area-togglers
+    .tips
+      cursor: move
+      background: darkorange
 </style>
