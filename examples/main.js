@@ -21,8 +21,6 @@ import routerRawDatas from "./router/routes/main-routes";
 // axios请求, 响应列表
 const responses = []
 axios.interceptors.response.use(function (response) {
-  console.log(response,'response')
-  // 只将获取数据的请求保存
   responses.push(response)
   return response;
 });

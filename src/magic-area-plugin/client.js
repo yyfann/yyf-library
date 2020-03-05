@@ -39,13 +39,19 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
         // 2 el-form-item, el-button或任何父级有源码地址的标签
         {
           test(e) {
-            // return [
-            //   'el-form-item__content', 'el-form-item__label'
-            // ].includes(e.target.className)
             return !!e.target.parentNode.getAttribute('source-code-location')
           },
           getTargetTag(e) {
             return e.target.parentNode
+          }
+        },
+        // 3 el-select或任何爷级有源码地址的标签
+        {
+          test(e) {
+            return !!e.target.parentNode.parentNode.getAttribute('source-code-location')
+          },
+          getTargetTag(e) {
+            return e.target.parentNode.parentNode
           }
         },
         // 1 el-table 的表头, 单元格
@@ -92,6 +98,10 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
   }
   document.addEventListener('click', openSourceCode)
   document.addEventListener('contextmenu', openSourceCode)
+
+
+  // -------------- 录制脚本 --------------
+
 
 
   // -------------- 操作面板实例 --------------
@@ -162,7 +172,7 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
       });
     }
   };
-  // Vue.use(openComponentPlugin);
+  Vue.use(openComponentPlugin);
 }
 
 

@@ -19,7 +19,12 @@
       .search-route-nav.route-nav(
         v-show="showAreas.includes('search-route-nav')"
       )
-        input(placeholder='搜索: 请输入侧边栏路由的title', type='text', v-model='targetRouteTitle')
+        input(
+          placeholder='搜索: 请输入侧边栏路由的title', 
+          type='text', 
+          v-model='targetRouteTitle',
+          ref="searchRouteInput"
+        )
         .matched-routes
           .matched-route(:key='matchedRouteIndex', @click='goPage(matchedRoute.index)', v-for='(matchedRoute, matchedRouteIndex) in matchedRoutes')
             span(v-html='matchedRoute.name')
@@ -60,21 +65,21 @@
         v-show="showAreas.includes('quick-network')"
         style="background: #292c33"
       )
-        //- json-viewer(
-        //-   :value="responsesJson"
-        //-   :expand-depth="6"
-        //-   style="background: wheat"
-        //- )
+        json-viewer(
+          :value="responsesJson"
+          :expand-depth="2"
+          style="background: wheat"
+        )
         //- tree-view(
         //-   :data='responsesJson' :options='{maxDepth: 3}'
         //-   style="background: wheat"
         //- )
-        json-view(
-          :data='responsesJson', 
-          theme="one-dark",
-          :deep="5"
-          style="background: #292c33"
-        )
+        //- json-view(
+        //-   :data='responsesJson', 
+        //-   theme="one-dark",
+        //-   style="background: #292c33"
+        //-   :deep="5"
+        //- )
 
     .footer
       .toggle-panel
@@ -92,13 +97,13 @@
 <script>
 import _ from "lodash";
 import { drag } from "@src/utils/drag";
-import jsonView from 'vue-json-views'
-import multiSelect from '@src/multi-select/multi-select.vue'
+import jsonView from "vue-json-views";
+import multiSelect from "@src/multi-select/multi-select.vue";
 
 export default {
   components: {
     multiSelect,
-    jsonView,
+    jsonView
   },
 
   props: {
@@ -129,9 +134,8 @@ export default {
 
     responses: {
       type: Array,
-      default: () => ([]),
-    },
-    
+      default: () => []
+    }
   },
 
   data() {
@@ -142,21 +146,21 @@ export default {
       userInfos: [],
       allAreas: [
         {
-          label: '用户常用路由',
-          value: "recent-route-nav",
+          label: "用户常用路由",
+          value: "recent-route-nav"
         },
         {
-          label: '路由搜索',
-          value: "search-route-nav",
+          label: "路由搜索",
+          value: "search-route-nav"
         },
         {
-          label: '用户信息',
-          value: "auto-login",
+          label: "用户信息",
+          value: "auto-login"
         },
         {
-          label: '网络请求',
-          value: "quick-network",
-        },
+          label: "网络请求",
+          value: "quick-network"
+        }
       ],
       showAreas: []
     };
@@ -205,7 +209,7 @@ export default {
     },
 
     localData() {
-      const attrsNeedLocal = ["show", "userInfos", 'showAreas'];
+      const attrsNeedLocal = ["show", "userInfos", "showAreas"];
       const obj = attrsNeedLocal.reduce((next, attr) => {
         next[attr] = this[attr];
         return next;
@@ -222,13 +226,17 @@ export default {
       //   }
       // })
 
+      // console.log(this.responses,'this.responses')
+
       // 对象的形式
       const obj = this.responses.reduce((obj, item) => {
-        obj[item.config.url] = item.data.resultObject.pageData
-        return obj
+        if (_.get(item, "data.resultObject")) {
+          obj[item.config.url] = item.data.resultObject.pageData;
+        }
+        return obj;
       }, {});
       return obj;
-    },
+    }
   },
 
   watch: {
@@ -279,9 +287,16 @@ export default {
 
     localData: {
       handler() {
-        this.updateLocalAll(this.localData);
+        localStorage.setItem(
+          "yyf-library-magic-area-data",
+          JSON.stringify(this.localData)
+        );
       },
       deep: true
+    },
+
+    show() {
+      this.searchRouteInputFocus();
     }
   },
 
@@ -350,16 +365,11 @@ export default {
     drag(magicArea, footer, {
       savePosition: true
     });
+
+    this.searchRouteInputFocus();
   },
 
   methods: {
-    updateLocalAll(localData) {
-      localStorage.setItem(
-        "yyf-library-magic-area-data",
-        JSON.stringify(localData)
-      );
-    },
-
     goPage(path) {
       if (!path) return;
       this.$router.push(path);
@@ -380,6 +390,12 @@ export default {
         return userInfo.id !== _userInfo.id;
       });
     },
+
+    searchRouteInputFocus() {
+      this.$nextTick(() => {
+        this.$refs.searchRouteInput.focus();
+      });
+    }
   }
 };
 </script>

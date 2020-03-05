@@ -39,6 +39,9 @@ export default {
   },
 
   created() {
+    axios.get('/mock/single-data', {test: 1}).then(resultObject => {
+      console.log(resultObject,'resultObject')
+    });
   },
 
   methods: {
