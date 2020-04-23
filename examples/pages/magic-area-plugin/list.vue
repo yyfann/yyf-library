@@ -23,6 +23,7 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -37,6 +38,7 @@ export default {
     //     console.log(this.$options.__file, 'el click')
     //   }
     // })
+    // console.log(a,'a')
   },
 
   methods: {

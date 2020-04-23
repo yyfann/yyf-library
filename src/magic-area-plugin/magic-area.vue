@@ -60,16 +60,16 @@
                 type='text', v-model='userInfo.recentRoutes'
               )
       
-      //- 展示请求
-      .responses-area(
-        v-show="showAreas.includes('quick-network')"
-        style="background: #292c33"
-      )
-        json-viewer(
-          :value="responsesJson"
-          :expand-depth="2"
-          style="background: wheat"
-        )
+      //- 展示请求 暂时不用
+      //- .responses-area(
+      //-   v-show="showAreas.includes('quick-network')"
+      //-   style="background: #292c33"
+      //- )
+      //-   json-viewer(
+      //-     :value="responsesJson"
+      //-     :expand-depth="2"
+      //-     style="background: wheat"
+      //-   )
         //- tree-view(
         //-   :data='responsesJson' :options='{maxDepth: 3}'
         //-   style="background: wheat"
@@ -97,13 +97,13 @@
 <script>
 import _ from "lodash";
 import { drag } from "@src/utils/drag";
-import jsonView from "vue-json-views";
+// import jsonView from "vue-json-views";
 import multiSelect from "@src/multi-select/multi-select.vue";
 
 export default {
   components: {
     multiSelect,
-    jsonView
+    // jsonView
   },
 
   props: {

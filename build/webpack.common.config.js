@@ -1,6 +1,7 @@
 const path = require("path");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+// const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 
 //项目根目录
 var projectDir = path.join(__dirname, '..');
@@ -42,9 +43,10 @@ module.exports = {
         exclude: /node_modules/,
         loader: "babel-loader",
         options: {
-          presets: [["@babel/preset-env"]],
+          presets: ["@babel/preset-env"],
           plugins: [
-            ["@babel/plugin-transform-runtime"]
+            // 'babel-plugin-lodash',
+            "@babel/plugin-transform-runtime",
           ]
         },
       },
@@ -61,5 +63,6 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(),
     new CleanWebpackPlugin(),
+    // new LodashModuleReplacementPlugin(),
   ]
 };

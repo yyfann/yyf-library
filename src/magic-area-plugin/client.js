@@ -1,8 +1,8 @@
 import axios from "axios";
 import _ from 'lodash'
 import magicArea from "./magic-area.vue";
-import JsonViewer from 'vue-json-viewer'
-import TreeView from "vue-json-tree-view"
+// import JsonViewer from 'vue-json-viewer'
+// import TreeView from "vue-json-tree-view"
 
 function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {}) {
   // -------------- 打开编辑器的函数 --------------
@@ -110,8 +110,8 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
   document.body.appendChild(magicAreaEl);
 
   if (!this.constructor.instance) {
-    Vue.use(JsonViewer)
-    Vue.use(TreeView)
+    // Vue.use(JsonViewer)
+    // Vue.use(TreeView)
 
     this.constructor.instance = new Vue({
       el: "#magicAreaEl",

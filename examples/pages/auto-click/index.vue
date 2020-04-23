@@ -78,7 +78,7 @@ import $ from "jquery";
 export default {
   data() {
     return {
-      value1: '',
+      value1: "",
       form: {
         input: "",
         value1: "",
@@ -126,18 +126,18 @@ export default {
   methods: {
     // -------------- form --------------
     remoteMethod() {
-      // setTimeout(() => {
-      this.form.remoteOptions = [
-        {
-          value: "选项a",
-          label: "话梅"
-        },
-        {
-          value: "选项b",
-          label: "薯条"
-        }
-      ];
-      // }, 50);
+      setTimeout(() => {
+        this.form.remoteOptions = [
+          {
+            value: "选项a",
+            label: "话梅"
+          },
+          {
+            value: "选项b",
+            label: "薯条"
+          }
+        ];
+      }, 3000);
     },
     // -------------- auto-click --------------
     recordFn(e) {
@@ -255,6 +255,8 @@ export default {
     },
 
     handleRecord(record) {
+
+
       return new Promise((resolve, reject) => {
         const options = [
           {
