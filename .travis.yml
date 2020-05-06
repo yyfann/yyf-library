@@ -1,9 +1,7 @@
 language: node_js
-sudo: required
+# sudo: required
 node_js:
   - "lts/*"
-before_install:
-  - chmod +x gradlew
 cache:
   directories:
     - node_modules
