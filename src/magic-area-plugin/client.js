@@ -100,10 +100,6 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
   document.addEventListener('contextmenu', openSourceCode)
 
 
-  // -------------- 录制脚本 --------------
-
-
-
   // -------------- 操作面板实例 --------------
   const magicAreaEl = document.createElement("div");
   magicAreaEl.id = "magicAreaEl";

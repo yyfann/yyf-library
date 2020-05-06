@@ -1,23 +1,20 @@
 <template>
   <div>
-    一个莫得感情的测试组件
+    <button>{{ content }}</button>
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    content: {
+      type: String,
+      default: '',
+    },
+  },
   data() {
     return {
-      
     }
-  },
-
-  methods: {
-    
   },
 }
 </script>
-
-<style scoped>
-
-</style>
