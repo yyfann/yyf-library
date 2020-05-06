@@ -17,6 +17,6 @@ git commit -m 'deploy'
 # git push -f git@github.com:yyfann/blog.git master:gh-pages
 
 # 如果使用 travis 持续集成
-git push -f https://${access_token}@github.com/blog.git master:gh-pages
+git push -f https://${access_token}@github.com/yyfann/blog.git master:gh-pages
 
 cd -
