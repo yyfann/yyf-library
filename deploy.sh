@@ -14,6 +14,9 @@ git add -A
 git commit -m 'deploy'
 
 # 将文档目录的master分支推送到blog仓库(任意一个仓库都行)的gh-pages分支
-git push -f git@github.com:yyfann/blog.git master:gh-pages
+# git push -f git@github.com:yyfann/blog.git master:gh-pages
+
+# 如果使用 travis 持续集成
+git push -f https://${access_token}@github.com/blog.git master:gh-pages
 
 cd -
