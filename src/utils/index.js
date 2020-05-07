@@ -47,6 +47,7 @@ function insertByPosition(src, positionObj, options = {}) {
       break
   }
 }
+
 /**
  * @param {Array} src - 原数组
  * @return {Array} - 处理后数组
@@ -73,10 +74,7 @@ function duplicateHandle(src) {
   return arr
 }
 
-
-
-
-export {
+module.exports = {
   dropExtraLine,
   insertByPosition,
   duplicateHandle,

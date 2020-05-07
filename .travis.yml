@@ -8,5 +8,6 @@ cache:
 before_install:
   - chmod +x deploy.sh
 script:
-  - ./deploy.sh
+  npm run test &&
+  ./deploy.sh &&
 branch: master
