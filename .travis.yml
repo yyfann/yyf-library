@@ -8,5 +8,5 @@ cache:
 before_install:
   - chmod +x deploy.sh
 script: 
-  - ./deploy.sh
+  - ./build/deploy.sh
 branch: master
