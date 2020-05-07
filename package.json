@@ -11,7 +11,8 @@
     "lib-analyze": "webpack --config build/webpack.lib.analyze.config.js --watch",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
-    "test": "jest"
+    "test": "jest",
+    "pub": "sh build/release.sh"
   },
   "author": "",
   "license": "ISC",
@@ -38,6 +39,7 @@
     "sass": "^1.24.0",
     "sass-loader": "^7.3.1",
     "scss-loader": "0.0.1",
+    "select-version-cli": "0.0.2",
     "style-loader": "^1.1.1",
     "url-loader": "^3.0.0",
     "vue": "^2.6.11",
