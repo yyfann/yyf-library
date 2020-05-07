@@ -8,7 +8,6 @@ describe('常用函数', () => {
       2: 'b',
     })
     console.log(res, 'res')
-    expect(res).toBe('12a3bccc')
-    // expect(res).toBe('12a3b')
+    expect(res).toBe('12a3b')
   })
 });
