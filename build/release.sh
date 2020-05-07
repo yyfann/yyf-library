@@ -16,4 +16,7 @@ npm version $VERSION --message "[release] $VERSION"
 
 git push
 
+# 发布, 返回到正确的源上
+nrm use npm
 npm publish
+nrm use taobao
