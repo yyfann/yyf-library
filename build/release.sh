@@ -6,7 +6,6 @@
 
 # 选择一个版本
 VERSION=`npx select-version-cli`
-
 echo "Releasing $VERSION ..."
 
 # 更新版本号, 自动打标签 (之前要先提交一波才行)
@@ -17,6 +16,4 @@ npm version $VERSION --message "[release] $VERSION"
 git push
 
 # 发布, 返回到正确的源上
-nrm use npm
 npm publish
-nrm use taobao
