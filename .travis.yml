@@ -6,7 +6,7 @@ cache:
     - node_modules
 # 配置脚本执行权限
 before_install:
-  - chmod +x deploy.sh
+  - chmod +x ./build/deploy.sh
 script: 
   - ./build/deploy.sh
 branch: master
