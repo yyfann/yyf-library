@@ -1,97 +1,148 @@
-<template lang="pug">
-  .magic-area(ref='magicArea', v-show='show')
-    .content
-      //- 当前用户常用路由导航
-      .recent-route-nav.route-nav(
+<template>
+  <div
+    class="magic-area"
+    ref="magicArea"
+    v-show="show"
+  >
+    <div class="content">
+      <div
+        class="recent-route-nav route-nav"
         v-show="showAreas.includes('recent-route-nav')"
-      )
-        div 最近使用的路由
-        .matched-routes
-          .matched-route(
-            :key='currentUserRecentRouteIndex', 
-            @click='goPage(currentUserRecentRoute.index)', 
-            v-for='(currentUserRecentRoute, currentUserRecentRouteIndex) in currentUserRecentRoutes'
-          )
-            span {{ currentUserRecentRoute.name }}
-            span :{{ currentUserRecentRoute.index }}
-
-      //- 搜索路由导航
-      .search-route-nav.route-nav(
+      >
+        <div>最近使用的路由</div>
+        <div class="matched-routes">
+          <div
+            :key="currentUserRecentRouteIndex"
+            @click="goPage(currentUserRecentRoute.path )"
+            class="matched-route"
+            v-for="(currentUserRecentRoute, currentUserRecentRouteIndex) in currentUserRecentRoutes"
+          >
+            <span>{{ currentUserRecentRoute.name }}</span>
+            <span>:{{ currentUserRecentRoute.path }}</span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="search-route-nav route-nav"
         v-show="showAreas.includes('search-route-nav')"
-      )
-        input(
-          placeholder='搜索: 请输入侧边栏路由的title', 
-          type='text', 
-          v-model='targetRouteTitle',
+      >
+        <input
+          placeholder="搜索: 请输入侧边栏路由的title"
           ref="searchRouteInput"
-        )
-        .matched-routes
-          .matched-route(:key='matchedRouteIndex', @click='goPage(matchedRoute.index)', v-for='(matchedRoute, matchedRouteIndex) in matchedRoutes')
-            span(v-html='matchedRoute.name')
-            span :{{ matchedRoute.index }}
-
-      //- 账号存储区
-      .auto-login(
+          type="text"
+          v-model="targetRouteTitle"
+        />
+        <div class="matched-routes">
+          <div
+            :key="matchedRouteIndex"
+            @click="goPage(matchedRoute.path )"
+            class="matched-route"
+            v-for="(matchedRoute, matchedRouteIndex) in matchedRoutes"
+          >
+            <span v-html="matchedRoute.name"></span>
+            <span>:{{ matchedRoute.path }}</span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="auto-login"
         v-show="showAreas.includes('auto-login')"
-      )
-        button(@click='addUserInfo') 添加用户信息
-        .user-infos(
+      >
+        <button @click="addUserInfo">添加用户信息</button>
+        <div
+          class="user-infos"
           ref="userInfos"
-        )
-          .user-info(
-            :key='userInfo.id', 
-            v-for='(userInfo, userInfoIndex) in userInfos'
-          )
-            div
-              .order 序号: {{ userInfoIndex + 1 }}
-              button(@click='deleteUserInfo(userInfo)') 删除此信息
-            div
-              span 标题
-              input(type='text', v-model='userInfo.title')
-            div
-              span 用户
-              input(type='text', v-model='userInfo.username')
-            div
-              span 密码
-              input(type='text', v-model='userInfo.password')
-            div
-              span 常用路由
-              textarea.recent-routes-textarea(
-                type='text', v-model='userInfo.recentRoutes'
-              )
-      
-      //- 展示请求 暂时不用
-      //- .responses-area(
-      //-   v-show="showAreas.includes('quick-network')"
-      //-   style="background: #292c33"
-      //- )
-      //-   json-viewer(
-      //-     :value="responsesJson"
-      //-     :expand-depth="2"
-      //-     style="background: wheat"
-      //-   )
-        //- tree-view(
-        //-   :data='responsesJson' :options='{maxDepth: 3}'
-        //-   style="background: wheat"
-        //- )
-        //- json-view(
-        //-   :data='responsesJson', 
-        //-   theme="one-dark",
-        //-   style="background: #292c33"
-        //-   :deep="5"
-        //- )
-
-    .footer
-      .toggle-panel
-        multi-select(
-          mode="multi"
+        >
+          <div
+            :key="userInfo.id"
+            class="user-info"
+            v-for="(userInfo, userInfoIndex) in userInfos"
+          >
+            <div>
+              <div class="order">序号: {{ userInfoIndex + 1 }}</div>
+              <button @click="deleteUserInfo(userInfo)">删除此信息</button>
+            </div>
+            <div>
+              <span>标题</span>
+              <input
+                type="text"
+                v-model="userInfo.title"
+              />
+            </div>
+            <div>
+              <span>用户</span>
+              <input
+                type="text"
+                v-model="userInfo.username"
+              />
+            </div>
+            <div>
+              <span>密码</span>
+              <input
+                type="text"
+                v-model="userInfo.password"
+              />
+            </div>
+            <div>
+              <span>常用路由</span>
+              <textarea
+                class="recent-routes-textarea"
+                type="text"
+                v-model="userInfo.recentRoutes"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div
+        class="responses-area"
+        style="background: #292c33"
+        v-show="showAreas.includes('quick-network')"
+      >
+        <json-viewer
+          :expand-depth="2"
+          :value="responsesJson"
+          style="background: wheat"
+        ></json-viewer>
+        <tree-view
+          :data="responsesJson"
+          :options="{maxDepth: 3}"
+          style="background: wheat"
+        ></tree-view>
+        <json-view
+          :data="responsesJson"
+          :deep="5"
+          style="background: #292c33"
+          theme="one-dark"
+        ></json-view>
+      </div>-->
+    </div>
+    <div class="footer">
+      <div class="toggle-panel">
+        <multi-select
           :options="allAreas"
           :values.sync="showAreas"
-        )
-      .tips(ref='footer')
-        div ctrl + m 切换隐藏显示
-        div ctrl + 左键 点击元素进入组件源码
-        div ctrl + l + 数字 自动登录
+          mode="multi"
+        ></multi-select>
+      </div>
+      <div
+        class="tips"
+        ref="footer"
+      >
+        <button @click="showTips = !showTips">使用说明</button>
+        <template v-if="showTips">
+          <div class="tips-title">ctrl + m:</div>
+          <div>切换隐藏显示</div>
+          <div class="tips-title">ctrl + 左键点击元素:</div>
+          <div>进入标签源码</div>
+          <div class="tips-title">alt + 左键点击组件:</div>
+          <div>进入组件npm包组件源码</div>
+          <div class="tips-title">ctrl + l + 数字:</div>
+          <div>自动登录</div>
+        </template>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -102,7 +153,7 @@ import multiSelect from "@src/multi-select/multi-select.vue";
 
 export default {
   components: {
-    multiSelect,
+    multiSelect
     // jsonView
   },
 
@@ -110,11 +161,6 @@ export default {
     routeDatas: {
       type: Array,
       default: () => []
-    },
-
-    launchEditor: {
-      type: Function,
-      default: null
     },
 
     loginBtnSelector: {
@@ -144,6 +190,7 @@ export default {
       matchedRoutes: [],
       show: true,
       userInfos: [],
+      showTips: false,
       allAreas: [
         {
           label: "用户常用路由",
@@ -156,11 +203,11 @@ export default {
         {
           label: "用户信息",
           value: "auto-login"
-        },
-        {
-          label: "网络请求",
-          value: "quick-network"
         }
+        // {
+        //   label: "网络请求",
+        //   value: "quick-network"
+        // }
       ],
       showAreas: []
     };
@@ -215,28 +262,28 @@ export default {
         return next;
       }, {});
       return obj;
-    },
-
-    responsesJson() {
-      // 数组的形式
-      // return this.responses.map(({data, config}) => {
-      //   return {
-      //     url: config.url,
-      //     pageData: data.resultObject.pageData
-      //   }
-      // })
-
-      // console.log(this.responses,'this.responses')
-
-      // 对象的形式
-      const obj = this.responses.reduce((obj, item) => {
-        if (_.get(item, "data.resultObject")) {
-          obj[item.config.url] = item.data.resultObject.pageData;
-        }
-        return obj;
-      }, {});
-      return obj;
     }
+
+    // responsesJson() {
+    //   // 数组的形式
+    //   // return this.responses.map(({data, config}) => {
+    //   //   return {
+    //   //     url: config.url,
+    //   //     pageData: data.resultObject.pageData
+    //   //   }
+    //   // })
+
+    //   // console.log(this.responses,'this.responses')
+
+    //   // 对象的形式
+    //   const obj = this.responses.reduce((obj, item) => {
+    //     if (_.get(item, "data.resultObject")) {
+    //       obj[item.config.url] = item.data.resultObject.pageData;
+    //     }
+    //     return obj;
+    //   }, {});
+    //   return obj;
+    // }
   },
 
   watch: {
@@ -244,7 +291,7 @@ export default {
       const routePath = val.fullPath;
 
       const targetMenu = this.routeDatas.find(routeData => {
-        return routeData.index === routePath;
+        return routeData.path === routePath;
       });
       if (targetMenu) {
         this.targetRouteTitle = targetMenu.name;
@@ -355,7 +402,7 @@ export default {
 
         // 登录用户信息对应的常用路由
         if (this.currentUserRecentRoutes.length) {
-          this.goPage(this.currentUserRecentRoutes[0].index);
+          this.goPage(this.currentUserRecentRoutes[0].path);
         }
       }
     };
@@ -448,14 +495,26 @@ export default {
       right: 450px
       overflow: auto
   .footer
-    height: 120px
+    // height: 120px
     border-radius: 0 0 20px 20px
     display: flex
     overflow: hidden
     .toggle-panel
-      width: 200px
+      width: 130px
       .area-togglers
     .tips
       cursor: move
       background: darkorange
+      flex: 1
+      min-width: 100px
+      .tips-title
+      .tips-title::before
+        content: ''
+        display: inline-block
+        width: 5px
+        height: 5px   
+        margin-right: 5px
+        background: black   
+        border-radius: 50%  
+        // font-weight: bold
 </style>

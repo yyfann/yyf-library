@@ -4,7 +4,7 @@ import magicArea from "./magic-area.vue";
 // import JsonViewer from 'vue-json-viewer'
 // import TreeView from "vue-json-tree-view"
 
-function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {}) {
+function magicAreaPlugin(Vue, router, routeDatas, moreConfigs = {}) {
   // -------------- 打开编辑器的函数 --------------
   function launchEditor(filePath) {
     if (!filePath) return
@@ -12,7 +12,7 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
     console.log(filePath, 'filePath')
 
     axios
-      .get(`http://localhost:${devServerPort}/code`, {
+      .get(`/code`, {
         params: {
           filePath: `-g ${filePath}`
         }
@@ -117,9 +117,7 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
       data: {
         magicProps: {
           routeDatas,
-          devServerPort,
           ...moreConfigs,
-          launchEditor,
         }
       },
       template: `
@@ -132,7 +130,7 @@ function magicAreaPlugin(Vue, router, routeDatas, devServerPort, moreConfigs = {
   }
 
 
-  // 点击打开组件级别的源码 (包括node_modules里面的)
+  // 点击打开组件级别的源码 (优先打开node_modules里面的, 没有则回退到项目的组件)
   const openComponentPlugin = {
     install(Vue, options) {
       Vue.mixin({

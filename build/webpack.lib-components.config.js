@@ -5,7 +5,8 @@ const commonConfig = require('./webpack.common.config')
 const components = require('./config/components')
 
 const libConfig = {
-  mode: 'production',
+  // mode: 'production',
+  mode: 'development',
   entry: components,
   output: {
     path: path.resolve(__dirname, "../lib"),

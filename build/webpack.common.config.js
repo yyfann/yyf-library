@@ -6,6 +6,8 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 //项目根目录
 var projectDir = path.join(__dirname, '..');
 
+let MiniCssExtractPlugin = require('mini-css-extract-plugin')
+
 module.exports = {
   resolve: {
     extensions: [".js", ".vue"],
@@ -24,6 +26,9 @@ module.exports = {
       {
         test: /\.less$/,
         loader: ["style-loader", "css-loader", "less-loader"]
+        // loader: [
+        //   MiniCssExtractPlugin.loader
+        //   , "css-loader", "less-loader"]
       },
       {
         test: /\.sass$/,
@@ -61,6 +66,10 @@ module.exports = {
     ]
   },
   plugins: [
+    // new MiniCssExtractPlugin({
+    //   filename: 'main.css'
+    // }),
+
     new VueLoaderPlugin(),
     new CleanWebpackPlugin(),
     // new LodashModuleReplacementPlugin(),

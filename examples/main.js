@@ -18,30 +18,27 @@ window.axios = axios;
 import { magicAreaPluginClient } from "@src/index.js";
 import routerRawDatas from "./router/routes/main-routes";
 
-// axios请求, 响应列表
-const responses = []
-axios.interceptors.response.use(function (response) {
-  responses.push(response)
-  return response;
-});
+// // axios请求, 响应列表
+// const responses = []
+// axios.interceptors.response.use(function (response) {
+//   responses.push(response)
+//   return response;
+// });
 
 // 路由映射配置
 const routeDatas = routerRawDatas.map(routerRawData => {
   return {
     name: routerRawData.meta.title,
-    index: routerRawData.path
+    path: routerRawData.path
   };
 });
 
-// devServer 的端口号
-const devServerPort = 8090;
-
-new magicAreaPluginClient(Vue, router, routeDatas, devServerPort, {
+new magicAreaPluginClient(Vue, router, routeDatas, {
   loginBtnSelector: ".login-yyy",
   appendBtnSelector: ".append-btn",
   appendBtnDelay: 3000,
   inspectUiLibrary: 'element-ui',
-  responses,
+  // responses,
 });
 
 

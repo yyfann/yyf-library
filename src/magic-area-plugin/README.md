@@ -1,7 +1,21 @@
 # magic-area-plugin
 
 ##  功能
-提供一个控制面板, 可以在前端页面直接操作vscode打开源码
+### 1 点击页面打开源码
+
+### 2 mock接口
+
+### 3 操作面板
+
+#### 1 路由搜索
+
+#### 1 多用户登录&储存
+
+
+
+### 
+
+
 
 ##  原理
 1 vue端: 在vue应用内添加一个面板组件, 内部解析当前组件对应的源码文件路径
@@ -16,8 +30,18 @@
 
 ##  配置
 
-### vue端
-main.js
+### main.js
+#### 1 只用定位源码的最简配置
+
+```javascript
+import Vue from 'vue'
+import { magicAreaPluginClient } from "yyf-library/lib/yyf-library";
+new magicAreaPluginClient(Vue);
+```
+
+
+
+#### 2 标准配置
 
 ```javascript
 import { magicAreaPluginClient } from "yyf-library/lib/yyf-library";
@@ -28,14 +52,12 @@ const routeDatas = [
     index: 'page1'  // 路由的path
   }
 ]
-// devServer 的端口号
-const devServerPort = 8080
-magicAreaPluginClient(Vue, router, routeDatas, devServerPort);
+magicAreaPluginClient(Vue, router, routeDatas);
 
 
 ```
 
-#### 禧云数科项目 useage
+#### 3 禧云数科项目示例
 ```javascript
 import menuDatas from "@src/config/menu.js";
 
@@ -49,9 +71,10 @@ const routeDatas = menuDatas
 magicAreaPluginClient(Vue, router, routeDatas);
 ```
 
-### devServer端
+### devServer
 
-找到devServer的配置
+#### 1 原生webpack
+
 ```javascript
 module.exports = {
   devServer: {
@@ -72,6 +95,38 @@ module.exports = {
   }
 }
 ```
+
+#### 2 vue-cli3
+
+```javascript
+const addElementLocationLoader = 'yyf-library/lib/magic-area-plugin/add-element-location-loader'
+module.exports = {
+  devServer: { // 开发环境下的配置
+    ...require("yyf-library/lib/magic-area-plugin/server")
+  },
+  runtimeCompiler: true,
+  chainWebpack: config => {
+    // 防止eslint下: No ESLint configuration found 报错
+    config.resolve.symlinks(false)
+    // 配置loader
+    config.module
+      .rule('vue')
+      .use('vue-loader')
+      .loader('vue-loader')
+      .tap(options => {
+        options.exposeFilename = true
+        return options
+      })
+      .end()
+      .use(addElementLocationLoader)
+      .loader(addElementLocationLoader)
+      .end()
+  },
+}
+
+```
+
+
 
 ##  使用
 

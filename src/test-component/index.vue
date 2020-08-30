@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button>{{ content }}</button>
+    <el-button>{{ content }}</el-button>
   </div>
 </template>
 
