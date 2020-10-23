@@ -19,9 +19,13 @@ const config = {
           username: `用户${index}`,
           number: index * 10,
           randomTag: Math.random(),
-          role: [1, 2],
+          role: ['1', '2'],
           group: [1, 2],
-          state: 1,
+          state: '1',
+          startTime1: "2018-8-10 00:00:00",
+          endTime1: "2018-8-11 00:00:00",
+          startTime3Begin: "2018-8-10 00:00:00",
+          startTime3End: "2018-8-11 00:00:00",
         }
       })
 
@@ -47,11 +51,19 @@ const config = {
 
     // 详情
     app.get("/mock/detail", function (req, res) {
+      const index = 1
       const data = {
-        id: 1,
-        username: `用户${1}`,
-        number: 1 * 10,
-        randomTag: Math.random()
+        id: index,
+        username: `用户${index}`,
+        number: index * 10,
+        randomTag: Math.random(),
+        role: ['1', '2'],
+        group: [1, 2],
+        state: '1',
+        startTime1: "2018-8-10 00:00:00",
+        endTime1: "2018-8-11 00:00:00",
+        startTime3Begin: "2018-8-10 00:00:00",
+        startTime3End: "2018-8-11 00:00:00",
       }
 
       res.send({

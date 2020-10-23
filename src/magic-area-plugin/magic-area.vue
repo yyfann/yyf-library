@@ -12,10 +12,10 @@
         <div>最近使用的路由</div>
         <div class="matched-routes">
           <div
-            :key="currentUserRecentRouteIndex"
+            :key="currentUserRecentRoutePath"
             @click="goPage(currentUserRecentRoute.path )"
             class="matched-route"
-            v-for="(currentUserRecentRoute, currentUserRecentRouteIndex) in currentUserRecentRoutes"
+            v-for="(currentUserRecentRoute, currentUserRecentRoutePath) in currentUserRecentRoutes"
           >
             <span>{{ currentUserRecentRoute.name }}</span>
             <span>:{{ currentUserRecentRoute.path }}</span>
@@ -34,10 +34,10 @@
         />
         <div class="matched-routes">
           <div
-            :key="matchedRouteIndex"
+            :key="matchedRoutePath"
             @click="goPage(matchedRoute.path )"
             class="matched-route"
-            v-for="(matchedRoute, matchedRouteIndex) in matchedRoutes"
+            v-for="(matchedRoute, matchedRoutePath) in matchedRoutes"
           >
             <span v-html="matchedRoute.name"></span>
             <span>:{{ matchedRoute.path }}</span>
@@ -231,7 +231,7 @@ export default {
           })
           .map(routeField => {
             const target = this.routeDatas.find(routeData => {
-              return routeData.name === routeField;
+              return routeData.name.trim() === routeField;
             });
             return target || {};
           })
@@ -243,10 +243,10 @@ export default {
             return routeField.indexOf(":") > -1;
           })
           .map(routeField => {
-            const [name, index] = routeField.split(":");
+            const [name, path] = routeField.split(":");
             return {
               name,
-              index
+              path: path.trim()
             };
           });
 

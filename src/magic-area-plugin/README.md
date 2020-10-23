@@ -3,17 +3,31 @@
 ##  功能
 ### 1 点击页面打开源码
 
+ctrl + 左键/右键 打开页面元素所在的源码
+
 ### 2 mock接口
+
+通过devServer提供接口
 
 ### 3 操作面板
 
-#### 1 路由搜索
+#### 路由搜索
 
-#### 1 多用户登录&储存
+#### 多用户登录&储存
 
+#### 用户名下的常用路由
 
+输入框的语法:
 
-### 
+```javascript
+内置路由名,
+自定义名称1: /path1,
+自定义名称2: /path2,
+```
+
+tip:
+
+内置路由名: routeDatas里面包含的名字
 
 
 
@@ -52,7 +66,7 @@ const routeDatas = [
     index: 'page1'  // 路由的path
   }
 ]
-magicAreaPluginClient(Vue, router, routeDatas);
+new magicAreaPluginClient(Vue, router, routeDatas);
 
 
 ```
@@ -68,7 +82,7 @@ const routeDatas = menuDatas
     .flat()
     .filter(x => x);
     
-magicAreaPluginClient(Vue, router, routeDatas);
+new magicAreaPluginClient(Vue, router, routeDatas);
 ```
 
 ### devServer
@@ -134,6 +148,44 @@ module.exports = {
 2 跳转路由
 3 打开源码
 4 ctrl + m 切换隐藏显示面板
+
+##  坑
+
+### 业务代码的 html 属性需要规范
+
+由于 loader 会重新解析标签，所以标签的 html 属性务必要用规范的 kabe-case ，否则会导致编译问题(parse5会无脑将props全转为小写)
+
+```html
+// 正确    
+<div custom-prop="xxx">1</div>
+// 错误
+<div customProp="xxx">1</div>
+
+```
+
+### 自定义组件不能有非闭合标签 (可选)
+
+tip: 这里loader内部其实会处理一下, 不用非遵守
+
+所有的标签必须闭合
+
+```html
+    <my-comp
+      type="text"
+    /></my-comp>
+```
+
+原生的标签可以不闭合
+
+```html
+<br>
+<img/>
+```
+
+### 组件名不能和html原生标签一致
+
+<header></header> 类似的不可以作为自定义组件名
+
 
 ##  TODO (欢迎pr)
 
