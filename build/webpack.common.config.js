@@ -13,7 +13,7 @@ module.exports = {
     extensions: [".js", ".vue"],
     alias: {
       "@src": path.join(projectDir, "src"),
-      "@example": path.join(projectDir, "examples"),
+      "@examples": path.join(projectDir, "examples"),
       vue$: "vue/dist/vue.esm.js"
     }
   },

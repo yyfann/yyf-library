@@ -113,7 +113,7 @@ module.exports = {
 #### 2 vue-cli3
 
 ```javascript
-const addElementLocationLoader = 'yyf-library/lib/magic-area-plugin/add-element-location-loader'
+
 module.exports = {
   devServer: { // 开发环境下的配置
     ...require("yyf-library/lib/magic-area-plugin/server")
@@ -123,6 +123,7 @@ module.exports = {
     // 防止eslint下: No ESLint configuration found 报错
     config.resolve.symlinks(false)
     // 配置loader
+    const addElementLocationLoader = 'yyf-library/lib/magic-area-plugin/add-element-location-loader'
     config.module
       .rule('vue')
       .use('vue-loader')

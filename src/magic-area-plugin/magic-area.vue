@@ -16,10 +16,7 @@
             @click="goPage(currentUserRecentRoute.path )"
             class="matched-route"
             v-for="(currentUserRecentRoute, currentUserRecentRoutePath) in currentUserRecentRoutes"
-          >
-            <span>{{ currentUserRecentRoute.name }}</span>
-            <span>:{{ currentUserRecentRoute.path }}</span>
-          </div>
+          >{{ currentUserRecentRoute.name }} : {{ currentUserRecentRoute.path }}</div>
         </div>
       </div>
       <div
@@ -471,6 +468,10 @@ export default {
           margin: 10px 0 10px 0
           background: wheat
           cursor: pointer
+          overflow: hidden    
+          text-overflow: ellipsis    
+          white-space: nowrap   
+          width: 300px
     .open-route-source-code
     .auto-login
       .user-infos
@@ -501,7 +502,7 @@ export default {
     overflow: hidden
     .toggle-panel
       width: 130px
-      .area-togglers
+      
     .tips
       cursor: move
       background: darkorange

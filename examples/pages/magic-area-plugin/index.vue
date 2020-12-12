@@ -1,29 +1,70 @@
 <template>
   <div>
     <!-- 测试打开html源码 -->
-    <list></list>
 
     <el-table
       :data="tableData"
       style="width: 100%"
     >
       <el-table-column
-        label="日期"
-        prop="date"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        label="姓名"
-        width="180"
-      >
-        <template slot-scope="scope">
-          {{ '就是: ' + scope.row.name }}
-        </template>
-      </el-table-column>
-      <el-table-column
         label="地址"
         prop="address"
       ></el-table-column>
+      <el-table-column label="原始组">
+        <!-- <el-table-column label="组1">
+          <el-table-column
+            label="日期1"
+            prop="date"
+            width="180"
+          ></el-table-column>
+          <el-table-column
+            label="日期2"
+            prop="date"
+            width="180"
+          ></el-table-column>
+        </el-table-column> -->
+
+        <el-table-column
+          label="姓名"
+          width="180"
+        >
+          <template slot-scope="scope">{{ '就是: ' + scope.row.name }}</template>
+        </el-table-column>
+        <el-table-column
+          label="姓名"
+          width="180"
+        >
+          <template slot-scope="scope">{{ '就是: ' + scope.row.name }}</template>
+        </el-table-column>
+      </el-table-column>
+      <el-table-column label="原始组">
+        <!-- <el-table-column label="组1">
+          <el-table-column
+            label="日期1"
+            prop="date"
+            width="180"
+          ></el-table-column>
+          <el-table-column
+            label="日期2"
+            prop="date"
+            width="180"
+          ></el-table-column>
+        </el-table-column> -->
+
+        <el-table-column
+          label="姓名"
+          width="180"
+        >
+          <template slot-scope="scope">{{ '就是: ' + scope.row.name }}</template>
+        </el-table-column>
+        <el-table-column
+          label="姓名"
+          width="180"
+        >
+          <template slot-scope="scope">{{ '就是: ' + scope.row.name }}</template>
+        </el-table-column>
+      </el-table-column>
+    
     </el-table>
 
     <el-form label-width="80px">
@@ -36,17 +77,18 @@
       </el-form-item>
     </el-form>
 
-    <el-button>按钮</el-button>
+    <list></list>
 
+    <el-button>按钮</el-button>
 
     <!-- 测试登录 -->
     <input
       @change="change"
       type="text"
       v-model="input1"
-    >
+    />
     <div>{{ input1 }}</div>
-    <input type="text">
+    <input type="text" />
     <button
       @click="login"
       class="login-yyy"
@@ -78,7 +120,7 @@ export default {
       ],
 
       form: {
-        name: '写loader的活动'
+        name: "写loader的活动"
       }
     };
   },

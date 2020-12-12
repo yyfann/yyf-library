@@ -1,9 +1,15 @@
 <template>
   <div
-    aA.sync="2"
-    aB="2"
     @aC="2"
+    a="1"
+    a.sync="2"
+    aB="2"
   ></div>
+  <svg-icon
+    :iconClass="iconHide"
+    class="toggle-icon"
+    v-if="scope.row.show === '0'"
+  ></svg-icon>
 </template>
 
 <script>
