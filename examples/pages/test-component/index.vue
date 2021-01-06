@@ -1,9 +1,19 @@
 <template>
   <div>
     <test-component></test-component>
+    
+    <el-button
+      @click="screenShot"
+      size="small"
+    >截图</el-button>
+    <div class="main">截图啊</div>
+
     <div>收起展开</div>
     <div class="container">
-      <div class="inner" ref="inner">
+      <div
+        class="inner"
+        ref="inner"
+      >
         <div
           :key="itemIndex"
           class="item"
@@ -18,10 +28,11 @@
 
 <script>
 import testComponent from "@src/test-component/index.vue";
+import html2canvas from "html2canvas";
 
 export default {
   components: {
-    testComponent,
+    testComponent
   },
   data() {
     return {
@@ -33,19 +44,28 @@ export default {
   },
 
   mounted() {
-    this.down()
+    this.down();
   },
+  
 
   methods: {
+    screenShot() {
+      html2canvas(document.querySelector(".main")).then(canvas => {
+        const link = document.createElement("a"); // 创建一个超链接对象实例
+        const event = new MouseEvent("click"); // 创建一个鼠标事件的实例
+        link.download = "Button.png"; // 设置要下载的图片的名称
+        link.href = canvas.toDataURL(); // 将图片的URL设置到超链接的href中
+        link.dispatchEvent(event); // 触发超链接的点击事件
+      });
+    },
     up() {
-      this.$refs.inner.style.height = "50px"
+      this.$refs.inner.style.height = "50px";
     },
     down() {
-      const height = this.$refs.inner.scrollHeight
-      console.log(height,'height')
-      this.$refs.inner.style.height = `${height}px`
-    },
-
+      const height = this.$refs.inner.scrollHeight;
+      console.log(height, "height");
+      this.$refs.inner.style.height = `${height}px`;
+    }
   }
 };
 </script>

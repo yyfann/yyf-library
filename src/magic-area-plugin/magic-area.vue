@@ -91,6 +91,7 @@
           </div>
         </div>
       </div>
+      <find-path></find-path>
       <!-- <div
         class="responses-area"
         style="background: #292c33"
@@ -147,10 +148,11 @@ import _ from "lodash";
 import { drag } from "@src/utils/drag";
 // import jsonView from "vue-json-views";
 import multiSelect from "@src/multi-select/multi-select.vue";
-
+import findPath from './components/find-path'
 export default {
   components: {
-    multiSelect
+    multiSelect,
+    findPath,
     // jsonView
   },
 

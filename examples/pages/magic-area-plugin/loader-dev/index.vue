@@ -1,11 +1,11 @@
 <template>
   <div
-
-    aC="2"
+    :aB="2"
     @aC="2"
     a="1"
+    aC="2"
     aC.sync="2"
-    :aB="2"></div>
+  ></div>
 </template>
 
 <script>
@@ -24,7 +24,10 @@ export default {
 
   async mounted() {},
 
-  methods: {}
+  methods: {
+    async init() {
+
+  }
 };
 </script>
 

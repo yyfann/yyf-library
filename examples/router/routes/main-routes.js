@@ -4,14 +4,14 @@ import xyList from "../../pages/xy-list/index.vue";
 
 
 export default [
-  // {
-  //   path: "/test-component",
-  //   name: "testComponent",
-  //   meta: {
-  //     title: "测试组件"
-  //   },
-  //   component: testComponent
-  // },
+  {
+    path: "/test-component",
+    name: "testComponent",
+    meta: {
+      title: "测试组件"
+    },
+    component: testComponent
+  },
   // {
   //   path: "/auto-click",
   //   name: "autoClick",
@@ -34,6 +34,7 @@ export default [
     meta: {
       title: "souce"
     },
+    redirect: '/source/to-code',
     component: ()=>import('@examples/pages/source-to-route/layout.vue'),
     children: [
       {
