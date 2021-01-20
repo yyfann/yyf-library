@@ -1,45 +1,46 @@
-import axios from 'axios';
-import _ from 'lodash';
-import magicArea from './magic-area.vue';
+import axios from 'axios'
+import _ from 'lodash'
+import magicArea from './magic-area.vue'
+
+window._ = _
 
 function magicAreaPlugin(Vue, router, routeDatas, moreConfigs = {}) {
-  // -------------- 打开编辑器的函数 --------------
   function launchEditor(filePath) {
-    if (!filePath) return;
+    if (!filePath) return
 
-    console.log(filePath, 'filePath');
+    console.log(filePath, 'filePath')
 
     axios.get(`/code`, {
       params: {
         filePath: `-g ${filePath}`
       }
-    });
+    })
   }
 
-  // 点击元素打开源码 (定位到行列)
+  // -------------- 打开源码, 行级别 --------------
   function openSourceCode(e) {
     if (e.ctrlKey) {
-      console.log(e.target, 'e.target');
+      console.log(e.target, 'e.target')
 
-      e.preventDefault();
+      e.preventDefault()
       // 判断点击元素的类别, 来找不同的标签(含有源码地址的)
       const options = [
         // 标签直接有源码地址
         {
           test(e) {
-            return !!e.target.getAttribute('source-code-location');
+            return !!e.target.getAttribute('source-code-location')
           },
           getTargetTag(e) {
-            return e.target;
+            return e.target
           }
         },
         // 2 el-form-item, el-button或任何父级有源码地址的标签
         {
           test(e) {
-            return !!e.target.parentNode.getAttribute('source-code-location');
+            return !!e.target.parentNode.getAttribute('source-code-location')
           },
           getTargetTag(e) {
-            return e.target.parentNode;
+            return e.target.parentNode
           }
         },
         // 3 el-select或任何爷级有源码地址的标签
@@ -47,10 +48,10 @@ function magicAreaPlugin(Vue, router, routeDatas, moreConfigs = {}) {
           test(e) {
             return !!e.target.parentNode.parentNode.getAttribute(
               'source-code-location'
-            );
+            )
           },
           getTargetTag(e) {
-            return e.target.parentNode.parentNode;
+            return e.target.parentNode.parentNode
           }
         },
         // 1 el-table 的表头, 单元格
@@ -59,14 +60,14 @@ function magicAreaPlugin(Vue, router, routeDatas, moreConfigs = {}) {
             return (
               _.get(e.target, 'parentNode.className', '').indexOf('el-table') >
                 -1 || _.get(e.target, 'className', '').indexOf('el-table') > -1
-            );
+            )
           },
           getTargetTag(e) {
             /**
              * el-table,el-table-column 处理 (支持多级表头)
              */
 
-            let elColumn;
+            let elColumn
 
             if (
               [e.target.localName, e.target.parentNode.localName].includes('th')
@@ -88,51 +89,51 @@ function magicAreaPlugin(Vue, router, routeDatas, moreConfigs = {}) {
                   正好点击元素可以通过他的 trIndex, thIndex 在hiddensFormat 中找到对应的 el-table-column : hiddensFormat[trIndex][thIndex]
                */
               const th =
-                e.target.className === 'cell' ? e.target.parentNode : e.target;
+                e.target.className === 'cell' ? e.target.parentNode : e.target
 
-              const tr = th.parentNode;
-              const thIndex = Array.from(tr.children).indexOf(th);
-              const trIndex = Array.from(tr.parentNode.children).indexOf(tr);
+              const tr = th.parentNode
+              const thIndex = Array.from(tr.children).indexOf(th)
+              const trIndex = Array.from(tr.parentNode.children).indexOf(tr)
 
-              const elTable = tr.parentNode.parentNode.parentNode.parentNode;
+              const elTable = tr.parentNode.parentNode.parentNode.parentNode
               const hiddenColumns = Array.from(elTable.children).find(
                 child => child.className === 'hidden-columns'
-              ).children;
+              ).children
 
               function getLevelNodes(src) {
-                let tree;
+                let tree
                 if (_.isArrayLike(src)) {
                   tree = {
                     name: 'root',
                     children: src
-                  };
+                  }
                 } else {
-                  tree = src;
+                  tree = src
                 }
 
-                let mountain = [];
+                let mountain = []
                 function walk(node, level) {
-                  level = level || 1;
-                  mountain[level - 1] = mountain[level - 1] || [];
-                  mountain[level - 1].push(node);
+                  level = level || 1
+                  mountain[level - 1] = mountain[level - 1] || []
+                  mountain[level - 1].push(node)
                   if (node.children) {
                     Array.from(node.children).forEach(child => {
-                      walk(child, level + 1);
-                    });
+                      walk(child, level + 1)
+                    })
                   }
                 }
-                walk(tree);
+                walk(tree)
 
                 if (_.isArrayLike(src)) {
-                  mountain.shift();
+                  mountain.shift()
                 }
 
-                return mountain;
+                return mountain
               }
 
-              const hiddenColumnsLevelNodes = getLevelNodes(hiddenColumns);
+              const hiddenColumnsLevelNodes = getLevelNodes(hiddenColumns)
 
-              elColumn = hiddenColumnsLevelNodes[trIndex][thIndex];
+              elColumn = hiddenColumnsLevelNodes[trIndex][thIndex]
             } else {
               // -------------- 点击单元格的处理
               /**
@@ -140,76 +141,137 @@ function magicAreaPlugin(Vue, router, routeDatas, moreConfigs = {}) {
                * 目标元素的通过 tdIndex 在末端节点离中可以找到对应的 el-table-column
                */
               const td =
-                e.target.className === 'cell' ? e.target.parentNode : e.target;
+                e.target.className === 'cell' ? e.target.parentNode : e.target
 
-              const tr = td.parentNode;
-              const tdIndex = Array.from(tr.children).indexOf(td);
+              const tr = td.parentNode
+              const tdIndex = Array.from(tr.children).indexOf(td)
 
-              const elTable = tr.parentNode.parentNode.parentNode.parentNode;
+              const elTable = tr.parentNode.parentNode.parentNode.parentNode
               const hiddenColumns = Array.from(elTable.children).find(
                 child => child.className === 'hidden-columns'
-              ).children;
+              ).children
 
               function getEndNodes(src) {
-                let tree;
+                let tree
                 if (_.isArrayLike(src)) {
                   tree = {
                     name: 'root',
                     children: src
-                  };
+                  }
                 } else {
-                  tree = src;
+                  tree = src
                 }
 
-
-                let mountain = [];
+                let mountain = []
                 function walk(node) {
                   if (!node.children.length) {
-                    mountain.push(node);
+                    mountain.push(node)
                   } else {
                     Array.from(node.children).forEach(child => {
-                      walk(child);
-                    });
+                      walk(child)
+                    })
                   }
                 }
-                walk(tree);
+                walk(tree)
 
-                return mountain;
+                return mountain
               }
 
-              const hiddenColumnsEndNodes = getEndNodes(hiddenColumns);
-              elColumn = hiddenColumnsEndNodes[tdIndex];
+              const hiddenColumnsEndNodes = getEndNodes(hiddenColumns)
+              elColumn = hiddenColumnsEndNodes[tdIndex]
             }
 
-            return elColumn;
+            return elColumn
           }
         }
-      ];
+      ]
 
       // 找到标签
-      let targetTag = null;
+      let targetTag = null
       _.forEach(options, ({ test, getTargetTag }) => {
         if (test(e)) {
-          targetTag = getTargetTag(e);
-          return false; // 退出循环
+          targetTag = getTargetTag(e)
+          return false // 退出循环
         }
-      });
-
+      })
 
       // 跳转源码
-      const filePath = targetTag.getAttribute('source-code-location');
-      launchEditor(filePath);
+      const filePath = targetTag.getAttribute('source-code-location')
+      launchEditor(filePath)
     }
   }
-  document.addEventListener('click', openSourceCode);
-  document.addEventListener('contextmenu', openSourceCode);
+  document.addEventListener('click', openSourceCode)
+  document.addEventListener('contextmenu', openSourceCode)
 
-  // -------------- 操作面板实例 --------------
-  const magicAreaEl = document.createElement('div');
-  magicAreaEl.id = 'magicAreaEl';
-  document.body.appendChild(magicAreaEl);
+  // function watchkeyAndClick(keyName, mouseType, fn) {
+  //   document.addEventListener('keydown', (keyEvent) => {
+  //     const isCtrl = keyEvent.key === keyName
+  //     // console.log(isCtrl,'isCtrl')
+  //     keyEvent.preventDefault()
+  //     let startTime = new Date().getTime()
+  //     const handleMouse = (clickEvent) => {
+  //       console.log('click')
+  //       let endTime = new Date().getTime()
+  //       const diff = endTime - startTime
+  //       console.log(diff,'diff')
+  //       if (isCtrl) {
+  //         clickEvent.preventDefault()
+  //         fn()
+  //       }
+  //       document.removeEventListener(mouseType, handleMouse)
+  //     }
+  //     document.addEventListener(mouseType, handleMouse)
+  //   })
+  // }
+
+  // watchkeyAndClick('Control', 'mousedown', () => {
+  //   // console.log(123,'123')
+  // })
+
+  // -------------- 打开源码, 组件级别(可定位到node_modules) --------------
+  const openComponentPlugin = {
+    install(Vue, options) {
+      Vue.mixin({
+        mounted() {
+          this.__injectedFn = e => {
+            if (e.altKey) {
+              e.preventDefault()
+              let filePath = this.$options.__file
+
+              const { inspectUiLibrary } = moreConfigs
+
+              if (filePath) {
+                if (_.startsWith(filePath, 'packages')) {
+                  if (inspectUiLibrary) {
+                    e.stopPropagation()
+                    filePath = `node_modules/${inspectUiLibrary}/${filePath}`
+                    launchEditor(filePath)
+                  }
+                } else {
+                  e.stopPropagation()
+                  launchEditor(filePath)
+                }
+              }
+            }
+          }
+          this.$el.addEventListener('click', this.__injectedFn)
+        },
+
+        destroyed() {
+          this.$el.removeEventListener('click', this.__injectedFn)
+        }
+      })
+    }
+  }
+  Vue.use(openComponentPlugin)
+
+  // -------------- 操作面板 --------------
+  const magicAreaEl = document.createElement('div')
+  magicAreaEl.id = 'magicAreaEl'
+  document.body.appendChild(magicAreaEl)
 
   if (!this.constructor.instance) {
+    // -------------- 面板vue实例
     this.constructor.instance = new Vue({
       el: '#magicAreaEl',
       components: {
@@ -218,54 +280,17 @@ function magicAreaPlugin(Vue, router, routeDatas, moreConfigs = {}) {
       data: {
         magicProps: {
           routeDatas,
-          ...moreConfigs
+          ...moreConfigs,
         }
       },
       template: `
-      <magic-area 
-        v-bind="magicProps"
-      />
-    `,
+        <magic-area 
+          v-bind="magicProps"
+        />
+      `,
       router
-    });
+    })
   }
-
-  // 点击打开组件级别的源码 (优先打开node_modules里面的, 没有则回退到项目的组件)
-  const openComponentPlugin = {
-    install(Vue, options) {
-      Vue.mixin({
-        mounted() {
-          this.__injectedFn = e => {
-            if (e.altKey) {
-              e.preventDefault();
-              let filePath = this.$options.__file;
-
-              const { inspectUiLibrary } = moreConfigs;
-
-              if (filePath) {
-                if (_.startsWith(filePath, 'packages')) {
-                  if (inspectUiLibrary) {
-                    e.stopPropagation();
-                    filePath = `node_modules/${inspectUiLibrary}/${filePath}`;
-                    launchEditor(filePath);
-                  }
-                } else {
-                  e.stopPropagation();
-                  launchEditor(filePath);
-                }
-              }
-            }
-          };
-          this.$el.addEventListener('click', this.__injectedFn);
-        },
-
-        destroyed() {
-          this.$el.removeEventListener('click', this.__injectedFn);
-        }
-      });
-    }
-  };
-  Vue.use(openComponentPlugin);
 }
 
-export default magicAreaPlugin;
+export default magicAreaPlugin

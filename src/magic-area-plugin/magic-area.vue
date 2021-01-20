@@ -1,9 +1,6 @@
 <template>
-  <div
-    class="magic-area"
-    ref="magicArea"
-    v-show="show"
-  >
+  <div class="magic-area" ref="magicArea" v-show="show">
+    <div class="header" ref="header"></div>
     <div class="content">
       <div
         class="recent-route-nav route-nav"
@@ -13,12 +10,18 @@
         <div class="matched-routes">
           <div
             :key="currentUserRecentRoutePath"
-            @click="goPage(currentUserRecentRoute.path )"
+            @click="goPage(currentUserRecentRoute.path)"
             class="matched-route"
-            v-for="(currentUserRecentRoute, currentUserRecentRoutePath) in currentUserRecentRoutes"
-          >{{ currentUserRecentRoute.name }} : {{ currentUserRecentRoute.path }}</div>
+            v-for="(
+              currentUserRecentRoute, currentUserRecentRoutePath
+            ) in currentUserRecentRoutes"
+          >
+            {{ currentUserRecentRoute.name }} :
+            {{ currentUserRecentRoute.path }}
+          </div>
         </div>
       </div>
+
       <div
         class="search-route-nav route-nav"
         v-show="showAreas.includes('search-route-nav')"
@@ -32,7 +35,7 @@
         <div class="matched-routes">
           <div
             :key="matchedRoutePath"
-            @click="goPage(matchedRoute.path )"
+            @click="goPage(matchedRoute.path)"
             class="matched-route"
             v-for="(matchedRoute, matchedRoutePath) in matchedRoutes"
           >
@@ -41,15 +44,10 @@
           </div>
         </div>
       </div>
-      <div
-        class="auto-login"
-        v-show="showAreas.includes('auto-login')"
-      >
+
+      <div class="auto-login" v-show="showAreas.includes('auto-login')">
         <button @click="addUserInfo">添加用户信息</button>
-        <div
-          class="user-infos"
-          ref="userInfos"
-        >
+        <div class="user-infos" ref="userInfos">
           <div
             :key="userInfo.id"
             class="user-info"
@@ -61,24 +59,15 @@
             </div>
             <div>
               <span>标题</span>
-              <input
-                type="text"
-                v-model="userInfo.title"
-              />
+              <input type="text" v-model="userInfo.title" />
             </div>
             <div>
               <span>用户</span>
-              <input
-                type="text"
-                v-model="userInfo.username"
-              />
+              <input type="text" v-model="userInfo.username" />
             </div>
             <div>
               <span>密码</span>
-              <input
-                type="text"
-                v-model="userInfo.password"
-              />
+              <input type="text" v-model="userInfo.password" />
             </div>
             <div>
               <span>常用路由</span>
@@ -91,29 +80,13 @@
           </div>
         </div>
       </div>
-      <find-path></find-path>
-      <!-- <div
-        class="responses-area"
-        style="background: #292c33"
-        v-show="showAreas.includes('quick-network')"
-      >
-        <json-viewer
-          :expand-depth="2"
-          :value="responsesJson"
-          style="background: wheat"
-        ></json-viewer>
-        <tree-view
-          :data="responsesJson"
-          :options="{maxDepth: 3}"
-          style="background: wheat"
-        ></tree-view>
-        <json-view
-          :data="responsesJson"
-          :deep="5"
-          style="background: #292c33"
-          theme="one-dark"
-        ></json-view>
-      </div>-->
+
+      <!-- <find-path v-show="showAreas.includes('find-path')"></find-path> -->
+
+      <copy-network
+        :responses="responses"
+        v-show="showAreas.includes('copy-network')"
+      ></copy-network>
     </div>
     <div class="footer">
       <div class="toggle-panel">
@@ -123,10 +96,7 @@
           mode="multi"
         ></multi-select>
       </div>
-      <div
-        class="tips"
-        ref="footer"
-      >
+      <div class="tips" ref="footer">
         <button @click="showTips = !showTips">使用说明</button>
         <template v-if="showTips">
           <div class="tips-title">ctrl + m:</div>
@@ -144,15 +114,18 @@
 </template>
 
 <script>
-import _ from "lodash";
 import { drag } from "@src/utils/drag";
 // import jsonView from "vue-json-views";
 import multiSelect from "@src/multi-select/multi-select.vue";
-import findPath from './components/find-path'
+
+import findPath from "./components/findPath";
+import copyNetwork from "./components/copyNetwork/copyNetwork";
+
 export default {
   components: {
     multiSelect,
     findPath,
+    copyNetwork
     // jsonView
   },
 
@@ -202,11 +175,15 @@ export default {
         {
           label: "用户信息",
           value: "auto-login"
+        },
+        {
+          label: "复制网络请求",
+          value: "copy-network"
+        },
+        {
+          label: "文件路径找路由",
+          value: "find-path"
         }
-        // {
-        //   label: "网络请求",
-        //   value: "quick-network"
-        // }
       ],
       showAreas: []
     };
@@ -256,33 +233,12 @@ export default {
 
     localData() {
       const attrsNeedLocal = ["show", "userInfos", "showAreas"];
-      const obj = attrsNeedLocal.reduce((next, attr) => {
-        next[attr] = this[attr];
-        return next;
-      }, {});
+      const obj = {}
+      attrsNeedLocal.forEach((key) => {
+        obj[key] = this[key]
+      })
       return obj;
     }
-
-    // responsesJson() {
-    //   // 数组的形式
-    //   // return this.responses.map(({data, config}) => {
-    //   //   return {
-    //   //     url: config.url,
-    //   //     pageData: data.resultObject.pageData
-    //   //   }
-    //   // })
-
-    //   // console.log(this.responses,'this.responses')
-
-    //   // 对象的形式
-    //   const obj = this.responses.reduce((obj, item) => {
-    //     if (_.get(item, "data.resultObject")) {
-    //       obj[item.config.url] = item.data.resultObject.pageData;
-    //     }
-    //     return obj;
-    //   }, {});
-    //   return obj;
-    // }
   },
 
   watch: {
@@ -407,8 +363,11 @@ export default {
     };
 
     // 拖拽
-    const { magicArea, footer } = this.$refs;
+    const { magicArea, footer, header } = this.$refs;
     drag(magicArea, footer, {
+      savePosition: true
+    });
+    drag(magicArea, header, {
       savePosition: true
     });
 
@@ -446,7 +405,6 @@ export default {
 };
 </script>
 
-
 <style lang="sass" scoped>
 .magic-area
   border: 1px solid #000
@@ -457,10 +415,14 @@ export default {
   background: #fff
   z-index: 2000
   box-shadow: 2px 2px 2px 2px #888888
+  overflow: hidden
+  .header
+    height: 20px
+    background: darkorange
+    cursor: move
   .content
-    padding: 10px
+    padding: 0 10px 10px
     position: relative
-    border-radius: 20px 20px 0 0
     .route-nav
       .matched-routes
         margin: 5px
@@ -470,9 +432,9 @@ export default {
           margin: 10px 0 10px 0
           background: wheat
           cursor: pointer
-          overflow: hidden    
-          text-overflow: ellipsis    
-          white-space: nowrap   
+          overflow: hidden
+          text-overflow: ellipsis
+          white-space: nowrap
           width: 300px
     .open-route-source-code
     .auto-login
@@ -499,12 +461,11 @@ export default {
       overflow: auto
   .footer
     // height: 120px
-    border-radius: 0 0 20px 20px
     display: flex
     overflow: hidden
     .toggle-panel
       width: 130px
-      
+
     .tips
       cursor: move
       background: darkorange
@@ -515,9 +476,9 @@ export default {
         content: ''
         display: inline-block
         width: 5px
-        height: 5px   
+        height: 5px
         margin-right: 5px
-        background: black   
-        border-radius: 50%  
+        background: black
+        border-radius: 50%
         // font-weight: bold
 </style>

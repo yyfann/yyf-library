@@ -101,9 +101,22 @@ function treeLevelOrder(root) {
   return ret;
 };
 
+function copyToClipBoard(content) {
+  // ------ 复制到input
+  var tag = document.createElement('textarea');
+  tag.setAttribute('id', 'cp_hgz_input');
+  tag.value = content;
+  document.getElementsByTagName('body')[0].appendChild(tag);
+  document.getElementById('cp_hgz_input').select();
+  document.execCommand('copy');
+  document.getElementById('cp_hgz_input').remove();
+  // console.log('已经复制到剪贴板')
+}
+
 export {
   dropExtraLine,
   insertByPosition,
   duplicateHandle,
   treeLevelOrder,
+  copyToClipBoard,
 }

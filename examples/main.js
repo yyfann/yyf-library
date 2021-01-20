@@ -1,4 +1,5 @@
 import Vue from "vue";
+window.Vue = Vue;
 
 import ElementUI from 'element-ui';
 Vue.use(ElementUI);
@@ -6,24 +7,15 @@ import 'element-ui/lib/theme-chalk/index.css';
 import App from "./App.vue";
 import router from "./router/router";
 import _ from 'lodash'
-import axios from 'axios'
-
-
-
-window.Vue = Vue;
 window._ = _;
+import axios from 'axios'
 window.axios = axios;
+window.axiosInstance = axios.create({})
+
 
 
 import { magicAreaPluginClient } from "@src/index.js";
 import routerRawDatas from "./router/routes/main-routes";
-
-// // axios请求, 响应列表
-// const responses = []
-// axios.interceptors.response.use(function (response) {
-//   responses.push(response)
-//   return response;
-// });
 
 // 路由映射配置
 const routeDatas = routerRawDatas.map(routerRawData => {
@@ -38,13 +30,12 @@ new magicAreaPluginClient(Vue, router, routeDatas, {
   appendBtnSelector: ".append-btn",
   appendBtnDelay: 3000,
   inspectUiLibrary: 'element-ui',
-  // responses,
 });
 
 
 new Vue({
   router,
-  render: function(h) {
+  render: function (h) {
     return h(App);
   }
 }).$mount("#app");

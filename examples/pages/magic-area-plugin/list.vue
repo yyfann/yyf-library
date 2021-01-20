@@ -31,7 +31,7 @@ export default {
     }
   },
 
-  mounted() {
+  async mounted() {
     // this.$el.addEventListener('click', (e) => {
     //   if (e.ctrlKey) {
     //     console.log(e,'e')
@@ -39,6 +39,9 @@ export default {
     //   }
     // })
     // console.log(a,'a')
+    await axios.post('/mock/list', { data: {name: '111'}})
+    const res = await axiosInstance.post('/mock/list', { data: {name: '111'}})
+    // console.log(res,'res')
   },
 
   methods: {

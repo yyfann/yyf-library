@@ -15,7 +15,7 @@ const devConfig = {
   devServer: {
     port: 8090,
     // open: true,
-    hot: true,
+    hot: false,
     ...require("../src/magic-area-plugin/server")
   },
   module: {
