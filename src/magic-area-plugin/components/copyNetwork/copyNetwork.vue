@@ -21,7 +21,7 @@
         class="list-item"
         v-for="(resp, respIndex) in respsShow"
       >
-        <div class="title" @click="resp.showDetail = !resp.showDetail">
+        <div class="title" @click="resp.showCodeText = !resp.showCodeText">
           <div class="url">
             {{ resp.url }}
           </div>
@@ -29,9 +29,15 @@
             {{ getStatus(resp).label }}
           </div>
         </div>
-        <div class="detail" v-if="resp.showDetail">
+        <div class="detail" v-if="resp.showCodeText">
+          <!-- <div
+            :contenteditable="true"
+            class="code-area"
+            v-html="resp.codeText"
+          ></div> -->
           <textarea
-            :value="resp.showText"
+            class="code-area"
+            :value="resp.codeText"
             cols="30"
             id
             name
@@ -80,38 +86,10 @@ export default {
 
     factors() {
       return {
-        resps: this.resps,
+        responses: this.responses,
         filterWord: this.filterWord,
         uniq: this.uniq,
       }
-    },
-
-    // 有用的字段
-    resps() {
-      return this.responses.map(item => {
-        item = _.cloneDeep(item)
-
-        const {
-          config: { url, method, body },
-          response,
-        } = item
-
-        const res = {
-          url,
-          method,
-          body,
-          response,
-        }
-
-        // json字符串的内容parse一下
-        _.forEach(res, (val, key) => {
-          if (this.isJsonStr(val)) {
-            res[key] = JSON.parse(val)
-          }
-        })
-
-        return res
-      })
     },
   },
 
@@ -121,20 +99,9 @@ export default {
     },
 
     factors() {
-      let respsShow = _.chain(this.resps)
-        .map(item => {
-          const res = _.cloneDeep(item)
-
-          const str = JSON.stringify(res)
-          res.showText = this.prettierCode(str)
-          res.showDetail = false
-
-          return res
-        })
-        .filter(item => {
-          return item.url.includes(this.filterWord)
-        })
-        .value()
+      let respsShow = this.responses.filter(item => {
+        return item.url.includes(this.filterWord)
+      })
 
       if (this.uniq) {
         respsShow.reverse()
@@ -167,13 +134,45 @@ export default {
       },
       //请求成功后进入
       onResponse: (response, handler) => {
-        this.responses.push(response)
+        this.responses.push(this.formatResponse(response))
         handler.next(response)
       },
     })
   },
 
   methods: {
+    formatResponse(item) {
+      item = _.cloneDeep(item)
+
+      const {
+        config: { url, method, body },
+        response,
+      } = item
+
+      const res = {
+        url,
+        method,
+        body,
+        response,
+      }
+
+      // json字符串的内容parse一下
+      _.forEach(res, (val, key) => {
+        if (this.isJsonStr(val)) {
+          res[key] = JSON.parse(val)
+        }
+      })
+
+
+      // 生成可阅读代码
+      let str = JSON.stringify(res)
+      str = this.prettierCode(str)
+      res.codeText = this.beautifyCode(str)
+      res.showCodeText = false
+
+      return res
+    },
+
     isJsonStr(str) {
       return _.isString(str) && _.startsWith(str, '{"')
     },
@@ -205,6 +204,18 @@ export default {
         plugins: prettierParserBabel,
       })
       return res
+    },
+
+    beautifyCode(str) {
+      const tags = ['url', 'method', 'body', 'response']
+      tags.forEach(tag => {
+        // 方案1: 加粗 (配置div展示)
+        // str = str.replace(`"${tag}"`, `<span style="font-weight: bold">${tag}</span>`)
+        // 方案2: 加标识符(div/textarea)
+        str = str.replace(`"${tag}"`, `=> ${tag}`)
+      })
+
+      return str
     },
   },
 }
@@ -239,12 +250,16 @@ export default {
       }
     }
     .detail {
-      textarea {
-      width: 400px;
-      height: 400px;
-      background: wheat;
-      font-size: 14px;
-      font-family: 'PingFang SC'
+      .code-area {
+        width: 400px;
+        height: 400px;
+        background: wheat;
+        font-size: 14px;
+        font-family: 'PingFang SC';
+        line-height: 20px;
+        word-break: break-all;
+        white-space: pre;
+        overflow: auto;
       }
     }
   }
