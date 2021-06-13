@@ -8,7 +8,6 @@
       >
         <div>最近使用的路由</div>
         <div class="matched-routes">
-          <!-- 123 -->
           <div
             :key="currentUserRecentRoutePath"
             @click="goPage(currentUserRecentRoute.path)"
